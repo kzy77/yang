@@ -1,0 +1,69 @@
+/* components/animations.css */
+
+@keyframes card-enter-slot {
+  from {
+    transform: scale(0.5) translateY(-50px);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.card-entering-slot-animation {
+  animation: card-enter-slot 0.3s ease-out;
+}
+
+@keyframes card-eliminate {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.1) rotate(-30deg);
+    opacity: 0;
+    visibility: hidden; /* Hide after animation */
+  }
+}
+
+.card-eliminate-animation {
+  animation: card-eliminate 0.5s ease-in-out forwards; /* forwards keeps the final state */
+}
+
+@keyframes card-matched-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.card-matched-animation {
+  animation: card-matched-pop 0.3s ease-in-out;
+}
+
+/* Animation for a card becoming face up (e.g. when covering card is removed) */
+@keyframes card-flip-up {
+  from {
+    transform: rotateY(90deg) scaleX(0.8);
+    opacity: 0.8;
+  }
+  to {
+    transform: rotateY(0deg) scaleX(1);
+    opacity: 1;
+  }
+}
+
+.card-flip-up-animation {
+  animation: card-flip-up 0.4s ease-out;
+  backface-visibility: hidden; /* Improves flip animation rendering */
+}
+
+/* General hover effect for clickable cards - can be in Card.tsx or here */
+.card-interactive:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
