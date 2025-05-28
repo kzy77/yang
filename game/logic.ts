@@ -86,7 +86,7 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
         // 更无序的堆叠，同时考虑层级带来的轻微偏移
         initialX: Math.random() * (PLACEMENT_AREA_WIDTH - CARD_WIDTH) + (layerInfo.layer * LAYER_OFFSET_X),
         initialY: Math.random() * (PLACEMENT_AREA_HEIGHT - CARD_HEIGHT) + (layerInfo.layer * LAYER_OFFSET_Y),
-        initialZ: layerInfo.layer,
+        initialZ: layerInfo.layer + (i / layerInfo.count) * 0.9, // More granular Z for visual stacking and coverage
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
       });
@@ -104,20 +104,23 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
       if (i === j) continue;
       const card1 = deck[i];
       const card2 = deck[j];
-      // 如果 card1 在 card2 上方 (card1.layer > card2.layer) 并且它们重叠
-      if (card1.layer > card2.layer && isOverlapping(card1, card2)) {
-        card1.covers.push(card2.id); // card1 覆盖 card2
-        card2.coveredBy.push(card1.id); // card2 被 card1 覆盖
+      // If card1 is visually on top of card2 (higher initialZ) and they overlap
+      if (card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
+        card1.covers.push(card2.id); // card1 covers card2
+        card2.coveredBy.push(card1.id); // card2 is covered by card1
+        console.log(`DEBUG: Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type})`);
       }
     }
   }
 
   // 5. 根据覆盖关系更新 isFaceUp 状态
-  deck.forEach(card => {
-    // 如果一张卡片没有被任何其他卡片覆盖，则它是朝上的
-    card.isFaceUp = card.coveredBy.length === 0;
-  });
-
+deck.forEach(card => {
+  const previouslyFaceUp = card.isFaceUp;
+  card.isFaceUp = card.coveredBy.length === 0;
+  if (previouslyFaceUp !== card.isFaceUp || !card.isFaceUp) { // Log changes or if still face down
+    console.log(`DEBUG: Card ${card.id} (type ${card.type}, layer ${card.layer}, initialZ ${card.initialZ?.toFixed(2)}) isFaceUp: ${card.isFaceUp}. Covered by: [${card.coveredBy.join(', ')}]`);
+  }
+});
 
   return {
     deck,
@@ -129,6 +132,36 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
   };
 }
 
+// Helper function to update coverage for all cards in the deck
+function updateCardCoverage(deck: Card[]): Card[] {
+  // Reset coverage for all cards
+  deck.forEach(card => {
+    card.covers = [];
+    card.coveredBy = [];
+  });
+
+  // Recalculate coverage
+  for (let i = 0; i < deck.length; i++) {
+    for (let j = 0; j < deck.length; j++) {
+      if (i === j) continue;
+      const card1 = deck[i];
+      const card2 = deck[j];
+      if (card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
+        card1.covers.push(card2.id);
+        card2.coveredBy.push(card1.id);
+      }
+    }
+  }
+
+  // Update isFaceUp status
+  deck.forEach(card => {
+    card.isFaceUp = card.coveredBy.length === 0;
+  });
+
+  return deck;
+}
+
+
 // 点击卡片逻辑
 export function clickCard(currentState: GameState, cardId: number): GameState {
   if (currentState.isGameOver || currentState.isGameWon) return currentState;
@@ -138,21 +171,31 @@ export function clickCard(currentState: GameState, cardId: number): GameState {
 
   const cardToMove = currentState.deck[cardIndexInDeck];
 
-  // 检查卡片是否可点击 (朝上且未被覆盖)
-  if (!cardToMove.isFaceUp || cardToMove.coveredBy.length > 0) {
-      // 实际游戏中，还需要检查 cardToMove 是否被其他卡片物理遮挡
-      const isPhysicallyCovered = currentState.deck.some(c => 
-          c.id !== cardToMove.id && 
-          c.layer > cardToMove.layer &&
-          // 此处应有更精确的重叠判断逻辑
-          Math.abs(currentState.deck.indexOf(c) - currentState.deck.indexOf(cardToMove)) < 2 
-      );
-      if(isPhysicallyCovered) return currentState;
+  console.log(`DEBUG: Attempting to click Card ${cardToMove.id} (type ${cardToMove.type}). Layer: ${cardToMove.layer}, InitialZ: ${cardToMove.initialZ?.toFixed(2)}. Covered by: [${cardToMove.coveredBy.join(', ')}]. Current isFaceUp: ${cardToMove.isFaceUp}`);
+
+  // 检查卡片是否可点击 (即没有被其他卡片覆盖)
+  // cardToMove.isFaceUp 的状态本身就是由 cardToMove.coveredBy.length === 0 决定的
+  // 所以我们直接检查 coveredBy 即可。
+  if (cardToMove.coveredBy.length > 0) {
+    console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered covered. Preventing click. Details of covering cards:`);
+    cardToMove.coveredBy.forEach(coveringCardId => {
+      const coveringCard = currentState.deck.find(c => c.id === coveringCardId);
+      if (coveringCard) {
+        console.log(`  - Covering Card ID: ${coveringCard.id}, Type: ${coveringCard.type}, InitialZ: ${coveringCard.initialZ?.toFixed(2)}, X: ${coveringCard.initialX?.toFixed(2)}, Y: ${coveringCard.initialY?.toFixed(2)}, W: ${coveringCard.width}, H: ${coveringCard.height}`);
+      } else {
+        console.log(`  - Covering Card ID: ${coveringCardId} not found in deck (this should not happen).`);
+      }
+    });
+    return currentState; // 卡片被遮挡，不可点击
   }
+  console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered NOT covered. Proceeding with click.`);
 
   // 将卡片从牌堆移动到消除槽
-  const newDeck = [...currentState.deck];
+  let newDeck = [...currentState.deck];
   newDeck.splice(cardIndexInDeck, 1);
+
+  // Update coverage for the remaining cards in the deck
+  newDeck = updateCardCoverage(newDeck);
   
   const newSlot = [...currentState.slot, cardToMove];
 
@@ -192,10 +235,14 @@ export function clickCard(currentState: GameState, cardId: number): GameState {
     }
   }
 
-  // 当卡片从牌堆移到消除槽后，不需要在此处普遍更新isFaceUp
-  // isFaceUp 的更新主要发生在被消除卡片所覆盖的卡片上 (已在上方处理)
-  // 以及初始加载时。
-
+  // 当卡片从牌堆移到消除槽后，需要更新牌堆中所有卡片的 isFaceUp 状态
+  // 因为被移动的卡片可能之前覆盖了其他卡片
+  newDeck.forEach(cardInDeck => {
+    // 首先移除对已移动到槽中卡片的覆盖依赖
+    cardInDeck.coveredBy = cardInDeck.coveredBy.filter(id => id !== cardToMove.id);
+    // 如果一张卡片没有被任何其他卡片覆盖，则它是朝上的
+    cardInDeck.isFaceUp = cardInDeck.coveredBy.length === 0;
+  });
 
   // 检查游戏结束条件
   let isGameOver = false;

@@ -165,22 +165,47 @@
 }
 
 .game-card-responsive.is-disabled {
-  cursor: not-allowed;
-  opacity: 0.6; /* Make it more faded */
-  background-color: #e9ecef;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Less prominent shadow */
-  /* filter: grayscale(50%); */ /* Optional: make it grayscale */
+    /* opacity: 0.7; */ /* Removed: Rely on natural stacking for visibility */
+    cursor: not-allowed;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Softer shadow for disabled state */
+    /* transform: none; */ /* No hover transform - this is handled by the :hover rule below */
 }
 
 .game-card-responsive.is-disabled:hover {
-  transform: none; /* No hover effect for disabled cards */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  border-color: #adb5bd;
+    transform: none; /* Ensure no transform on hover for disabled cards */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Consistent shadow for disabled state on hover */
 }
 
 .game-card-responsive.is-disabled::before {
-    transform: none;
-    box-shadow: 1px 1px 0px rgba(0,0,0,0.03), 2px 2px 0px rgba(0,0,0,0.03);
+    opacity: 0.5; /* Make thickness less prominent for disabled cards */
+}
+
+/* Styles for the card type display span */
+.card-type-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: var(--card-font-size, 24px); /* Use CSS variable for font size */
+    font-weight: bold;
+    color: var(--card-text-color, #333);
+    transition: clip-path 0.3s ease-out; /* Smooth transition for clip-path */
+}
+
+/* When the card is not face up, clip its content to show only a part */
+.game-card-responsive:not(.is-face-up) .card-type-display {
+    /* clip-path: inset(0 0 70% 0); Reveal bottom 30% */
+    /* Alternatively, reveal a corner or a side slice */
+    /* clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0% 100%); */ /* Reveal bottom 30% - Temporarily commented out for debugging */
+    /* background-color: rgba(200, 200, 200, 0.7); */ /* Optional: slightly different background for the revealed part */
+}
+
+/* Ensure SVG icons within cards scale correctly */
+.card-type-display svg {
+    width: 70%; /* Adjust size as needed */
+    height: 70%; /* Adjust size as needed */
+    object-fit: contain; /* Ensure the icon scales nicely within its bounds */
 }
 
 /* Elimination Slot */

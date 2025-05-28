@@ -71,10 +71,10 @@ const GameInterface: React.FC = () => {
     return (
       <CardComponent
         key={`deck-${card.id}`}
-        cardData={card}
+        cardData={card} // cardData 包含 isFaceUp
         onClick={handleCardClick}
         style={cardPositionStyle} // Pass down position style
-        className={`game-card-responsive ${!card.isFaceUp || card.coveredBy.length > 0 ? 'is-disabled' : ''}`.trim()}
+        className={`game-card-responsive ${card.isFaceUp ? 'is-face-up' : ''} ${card.coveredBy.length > 0 ? 'is-disabled' : ''}`.trim()}
       />
     );
   };
