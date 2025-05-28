@@ -106,7 +106,7 @@ const CardComponent: React.FC<CardProps> = ({ cardData, onClick, style, classNam
 
   return (
     <div
-      style={{ ...style, zIndex: Math.round(cardData.initialZ * 100) }} // Apply positioning styles and z-index
+      style={{ ...style, zIndex: Math.round((cardData.initialZ || 0) * 100) }} // 使用空值合并确保initialZ未定义时默认为0
       className={combinedClassName}
       onClick={() => cardData.isFaceUp && onClick(cardData.id)} // Clickable only if isFaceUp
     >
