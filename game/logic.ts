@@ -105,10 +105,10 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
       const card1 = deck[i];
       const card2 = deck[j];
       // If card1 is visually on top of card2 (higher initialZ) and they overlap
-      if (card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
-        card1.covers.push(card2.id); // card1 covers card2
-        card2.coveredBy.push(card1.id); // card2 is covered by card1
-        console.log(`DEBUG: Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type})`);
+      if (card1.initialZ !== undefined && card2.initialZ !== undefined && card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
+        card1.covers.push(card2.id);
+        card2.coveredBy.push(card1.id);
+        console.log(`DEBUG: Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}, X: ${card2.initialX?.toFixed(2)}, Y: ${card2.initialY?.toFixed(2)}, W: ${card2.width}, H: ${card2.height}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type}, X: ${card1.initialX?.toFixed(2)}, Y: ${card1.initialY?.toFixed(2)}, W: ${card1.width}, H: ${card1.height})`);
       }
     }
   }
@@ -146,9 +146,10 @@ function updateCardCoverage(deck: Card[]): Card[] {
       if (i === j) continue;
       const card1 = deck[i];
       const card2 = deck[j];
-      if (card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
+      if (card1.initialZ !== undefined && card2.initialZ !== undefined && card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
         card1.covers.push(card2.id);
         card2.coveredBy.push(card1.id);
+        console.log(`DEBUG: (updateCardCoverage) Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}, X: ${card2.initialX?.toFixed(2)}, Y: ${card2.initialY?.toFixed(2)}, W: ${card2.width}, H: ${card2.height}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type}, X: ${card1.initialX?.toFixed(2)}, Y: ${card1.initialY?.toFixed(2)}, W: ${card1.width}, H: ${card1.height})`);
       }
     }
   }
