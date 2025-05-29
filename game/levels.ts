@@ -17,6 +17,8 @@ export interface Level {
   cardTypes: string[]; // 该关卡使用的卡片类型
   cardsPerType: number; // 每种类型卡片的数量（通常是3的倍数，以确保可以完全消除）
   layers: LayerConfig[]; // 关卡的层级布局配置
+  difficulty: 'easy' | 'medium' | 'hard'; // 关卡难度
+  reward: number; // 关卡奖励
   // 可以添加其他关卡特定属性，如时间限制、目标分数等
 }
 
@@ -33,6 +35,8 @@ export const sampleLevels: Level[] = [
       { layer: 2, count: 12 }, // 最顶层
       // 总卡片数必须与 cardTypes.length * cardsPerType 匹配或由 initializeGame 处理差异
     ],
+    difficulty: 'easy',
+    reward: 100,
   },
   {
     id: 2,
@@ -44,6 +48,8 @@ export const sampleLevels: Level[] = [
       { layer: 1, count: 24 },
       { layer: 2, count: 24 },
     ],
+    difficulty: 'medium',
+    reward: 200,
   },
   // 可以添加更多关卡...
 ];
