@@ -196,12 +196,112 @@
 }
 
 /* When the card is not face up, clip its content to show only a part */
+/* 当卡片未翻开时隐藏卡片内容 */
 .game-card-responsive:not(.is-face-up) .card-type-display {
+    clip-path: inset(0 0 70% 0);
+}
     /* clip-path: inset(0 0 70% 0); Reveal bottom 30% */
+/* 当卡片未翻开时隐藏卡片内容 */
+.game-card-responsive:not(.is-face-up) .card-type-display {
+    clip-path: inset(0 0 70% 0);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  :root {
+    --card-width: 55px;
+    --card-height: 75px;
+    --card-margin: 4px;
+    --slot-card-width: 50px;
+    --slot-card-height: 70px;
+  }
+
+  .game-title {
+    font-size: 2em;
+  }
+
+  .score-display {
+    font-size: 1.1em;
+  }
+
+  .message-display {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+
+  .game-board-container {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .game-board {
+    width: 300px; /* Further adjusted for smaller screens */
+    height: 280px; /* Further adjusted for smaller screens */
+  }
+
+  .restart-button {
+    padding: 10px 20px;
+    font-size: 0.95em;
+    margin-top: 20px;
+  }
+
+  .slot-area-title {
+    font-size: 1.2em;
+    margin-top: 15px;
+    margin-bottom: 8px;
+  }
+
+  .slot-container {
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+
+  .elimination-slot {
+    padding: 10px;
+  }
+
+  .empty-slot-placeholder {
+    width: var(--slot-card-width);
+    height: var(--slot-card-height);
+    margin: var(--card-margin);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --card-width: 45px;
+    --card-height: 60px;
+    --card-margin: 3px;
+    --slot-card-width: 40px;
+    --slot-card-height: 55px;
+  }
+
+  .game-title {
+    font-size: 1.8em;
+  }
+
+  .score-display {
+    font-size: 1em;
+  }
+
+  .message-display {
+    font-size: 0.9em;
+    padding: 6px 10px;
+  }
+
+  .game-board {
+    width: 250px;
+    height: 230px;
+  }
+
+  .restart-button {
+    font-size: 0.9em;
+  }
+}
     /* Alternatively, reveal a corner or a side slice */
     /* clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0% 100%); */ /* Reveal bottom 30% - Temporarily commented out for debugging */
     /* background-color: rgba(200, 200, 200, 0.7); */ /* Optional: slightly different background for the revealed part */
-}
+/* 移除多余的右花括号 */
 
 /* Ensure SVG icons within cards scale correctly */
 .card-type-display svg {
