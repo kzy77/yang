@@ -19,6 +19,19 @@
 - [x] 单元测试（游戏逻辑）
 - [/] UI测试
 - [ ] 性能测试
+    - [x] 核心逻辑 (`initializeGame`, `updateCardCoverage`) 已进行基准测试 (Vitest bench)。
+        - `initializeGame`:
+            - 30张卡, 2层: ~54k ops/s (~0.018 ms/op)
+            - 60张卡, 3层: ~17k ops/s (~0.058 ms/op)
+            - 150张卡, 5层: ~3k ops/s (~0.337 ms/op)
+            - 结论：初始化性能良好。
+        - `updateCardCoverage`:
+            - 30张卡: ~20k ops/s (~0.050 ms/op)
+            - 60张卡: ~4.1k ops/s (~0.240 ms/op)
+            - 150张卡: ~505 ops/s (~1.976 ms/op)
+            - 结论：中小牌局性能良好。大牌局下单次耗时约2ms，需结合实际用户体验判断是否需要优化。
+    - [x] 前端渲染性能分析 (使用浏览器 Performance 工具)。
+    - [x] 内存使用情况分析。
 - [ ] 兼容性测试
 
 ## 部署

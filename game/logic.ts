@@ -108,19 +108,19 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
       if (card1.initialZ !== undefined && card2.initialZ !== undefined && card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
         card1.covers.push(card2.id);
         card2.coveredBy.push(card1.id);
-        console.log(`DEBUG: Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}, X: ${card2.initialX?.toFixed(2)}, Y: ${card2.initialY?.toFixed(2)}, W: ${card2.width}, H: ${card2.height}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type}, X: ${card1.initialX?.toFixed(2)}, Y: ${card1.initialY?.toFixed(2)}, W: ${card1.width}, H: ${card1.height})`);
+        // console.log(`DEBUG: Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}, X: ${card2.initialX?.toFixed(2)}, Y: ${card2.initialY?.toFixed(2)}, W: ${card2.width}, H: ${card2.height}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type}, X: ${card1.initialX?.toFixed(2)}, Y: ${card1.initialY?.toFixed(2)}, W: ${card1.width}, H: ${card1.height})`);
       }
     }
   }
 
   // 5. 根据覆盖关系更新 isFaceUp 状态
-deck.forEach(card => {
-  const previouslyFaceUp = card.isFaceUp;
-  card.isFaceUp = card.coveredBy.length === 0;
-  if (previouslyFaceUp !== card.isFaceUp || !card.isFaceUp) { // Log changes or if still face down
-    console.log(`DEBUG: Card ${card.id} (type ${card.type}, layer ${card.layer}, initialZ ${card.initialZ?.toFixed(2)}) isFaceUp: ${card.isFaceUp}. Covered by: [${card.coveredBy.join(', ')}]`);
-  }
-});
+  deck.forEach(card => {
+    const previouslyFaceUp = card.isFaceUp;
+    card.isFaceUp = card.coveredBy.length === 0;
+    // if (previouslyFaceUp !== card.isFaceUp || !card.isFaceUp) { // Log changes or if still face down
+    //   console.log(`DEBUG: Card ${card.id} (type ${card.type}, layer ${card.layer}, initialZ ${card.initialZ?.toFixed(2)}) isFaceUp: ${card.isFaceUp}. Covered by: [${card.coveredBy.join(', ')}]`);
+    // }
+  });
 
   return {
     deck,
@@ -133,7 +133,8 @@ deck.forEach(card => {
 }
 
 // Helper function to update coverage for all cards in the deck
-function updateCardCoverage(deck: Card[]): Card[] {
+export function updateCardCoverage(deck: Card[]): Card[] {
+  // console.log('UCC CALLED:', deck.length); // REMOVED Temporary log for benchmark debugging
   // Reset coverage for all cards
   deck.forEach(card => {
     card.covers = [];
@@ -149,7 +150,6 @@ function updateCardCoverage(deck: Card[]): Card[] {
       if (card1.initialZ !== undefined && card2.initialZ !== undefined && card1.initialZ > card2.initialZ && isOverlapping(card1, card2)) {
         card1.covers.push(card2.id);
         card2.coveredBy.push(card1.id);
-        console.log(`DEBUG: (updateCardCoverage) Card ${card2.id} (layer ${card2.layer}, initialZ ${card2.initialZ?.toFixed(2)}, type ${card2.type}, X: ${card2.initialX?.toFixed(2)}, Y: ${card2.initialY?.toFixed(2)}, W: ${card2.width}, H: ${card2.height}) is covered by Card ${card1.id} (layer ${card1.layer}, initialZ ${card1.initialZ?.toFixed(2)}, type ${card1.type}, X: ${card1.initialX?.toFixed(2)}, Y: ${card1.initialY?.toFixed(2)}, W: ${card1.width}, H: ${card1.height})`);
       }
     }
   }
