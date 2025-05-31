@@ -18,7 +18,7 @@
 ## 测试计划
 - [x] 单元测试（游戏逻辑）
 - [/] UI测试
-- [ ] 性能测试
+- [/] 性能测试
     - [x] 核心逻辑 (`initializeGame`, `updateCardCoverage`) 已进行基准测试 (Vitest bench)。
         - `initializeGame`:
             - 30张卡, 2层: ~54k ops/s (~0.018 ms/op)
@@ -32,11 +32,11 @@
             - 结论：中小牌局性能良好。大牌局下单次耗时约2ms，需结合实际用户体验判断是否需要优化。
     - [x] 前端渲染性能分析 (使用浏览器 Performance 工具)。
     - [x] 内存使用情况分析。
-- [ ] 兼容性测试
+- [/] 兼容性测试
 
 ## 部署
-- [ ] 支持 Cloudflare Pages 部署
-- [ ] 框架使用 Next.js
+- [x] 补充 Cloudflare Pages 部署文档 (Vite项目)
+- [ ] 框架迁移到 Next.js (并更新部署文档)
 
 ## 其他
 - [ ] 音效添加
