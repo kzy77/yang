@@ -2,8 +2,8 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
 import './animations.css'; // Import a new CSS file for animations
 import './responsive.css'; // Import responsive CSS
-import { initializeGame, clickCard, GameState, Card as GameCard } from '../game/logic';
-import { getLevelById, Level } from '../game/levels';
+import { initializeGame, clickCard, GameState, Card as GameCard } from '@/game/logic';
+import { getLevelById, Level } from '@/game/levels';
 
 // 基础卡片样式相关的定义已移至 responsive.css
 // const baseCardStyle: React.CSSProperties = { ... }; // Kept for reference, but not used directly for empty slots anymore.
@@ -32,7 +32,14 @@ const GameInterface: React.FC = () => {
     const levelData = getLevelById(1);
     if (levelData) {
       setCurrentLevel(levelData);
-      setGameState(initializeGame(levelData.cardTypes, levelData.cardsPerType, levelData.layers));
+      const initialGs = initializeGame(levelData.cardTypes, levelData.cardsPerType, levelData.layers);
+      setGameState(initialGs);
+      // Check initial game state for win/over conditions to set message
+      if (initialGs.isGameWon) {
+        setMessage(`恭喜！你赢了！得分: ${initialGs.score}`);
+      } else if (initialGs.isGameOver) {
+        setMessage(`游戏结束！槽满了。得分: ${initialGs.score}`);
+      }
     } else {
       setMessage('无法加载关卡数据！');
     }

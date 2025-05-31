@@ -1,5 +1,5 @@
 {
-  "name": "next-yang-app",
+  "name": "yang",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,11 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --config next-yang/jest.config.js --no-cache",
-    "test:simple": "jest test.js --no-cache",
-    "test:watch": "jest --watch",
-    "test:ui": "playwright test",
-    "test:ui:debug": "playwright test --debug"
+    "test": "vitest",
+    "e2e": "playwright test",
+    "e2e:debug": "playwright test --debug",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "next": "15.3.3",
@@ -19,24 +19,19 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.27.2",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.52.0",
-    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
-    "@types/jest": "^29.5.14",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "babel-jest": "^29.7.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.5.0",
+    "@vitest/coverage-v8": "^3.1.4",
+    "@vitest/ui": "^3.1.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "ts-jest": "^29.3.4",
-    "typescript": "^5"
+    "happy-dom": "^17.5.6",
+    "typescript": "^5",
+    "vitest": "^3.1.4"
   }
 }

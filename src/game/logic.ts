@@ -23,7 +23,7 @@ export interface GameState {
   isGameWon: boolean;
 }
 
-const MAX_SLOT_SIZE = 7;
+export const MAX_SLOT_SIZE = 7;
 
 // 卡片大致尺寸，用于重叠计算 (应与CSS中的 --card-width, --card-height 一致或按比例)
 const CARD_WIDTH = 70;
@@ -162,7 +162,6 @@ export function updateCardCoverage(deck: Card[]): Card[] {
   return deck;
 }
 
-
 // 点击卡片逻辑
 export function clickCard(currentState: GameState, cardId: number): GameState {
   if (currentState.isGameOver || currentState.isGameWon) return currentState;
@@ -170,38 +169,21 @@ export function clickCard(currentState: GameState, cardId: number): GameState {
   const cardIndexInDeck = currentState.deck.findIndex(c => c.id === cardId);
   if (cardIndexInDeck === -1) return currentState; // 卡片不存在
 
-  const cardToMove = currentState.deck[cardIndexInDeck];
+  const cardToMove = { ...currentState.deck[cardIndexInDeck] }; // Clone the card to move
 
-  console.log(`DEBUG: Attempting to click Card ${cardToMove.id} (type ${cardToMove.type}). Layer: ${cardToMove.layer}, InitialZ: ${cardToMove.initialZ?.toFixed(2)}. Covered by: [${cardToMove.coveredBy.join(', ')}]. Current isFaceUp: ${cardToMove.isFaceUp}`);
+  // console.log(`DEBUG: Attempting to click Card ${cardToMove.id} (type ${cardToMove.type}). Layer: ${cardToMove.layer}, InitialZ: ${cardToMove.initialZ?.toFixed(2)}. Covered by: [${cardToMove.coveredBy.join(', ')}]. Current isFaceUp: ${cardToMove.isFaceUp}`);
 
-  // 检查卡片是否可点击 (即没有被其他卡片覆盖)
-  // cardToMove.isFaceUp 的状态本身就是由 cardToMove.coveredBy.length === 0 决定的
-  // 所以我们直接检查 coveredBy 即可。
   if (cardToMove.coveredBy.length > 0) {
-    console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered covered. Preventing click. Details of covering cards:`);
-    cardToMove.coveredBy.forEach(coveringCardId => {
-      const coveringCard = currentState.deck.find(c => c.id === coveringCardId);
-      if (coveringCard) {
-        console.log(`  - Covering Card ID: ${coveringCard.id}, Type: ${coveringCard.type}, InitialZ: ${coveringCard.initialZ?.toFixed(2)}, X: ${coveringCard.initialX?.toFixed(2)}, Y: ${coveringCard.initialY?.toFixed(2)}, W: ${coveringCard.width}, H: ${coveringCard.height}`);
-      } else {
-        console.log(`  - Covering Card ID: ${coveringCardId} not found in deck (this should not happen).`);
-      }
-    });
-    return currentState; // 卡片被遮挡，不可点击
+    // console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered covered. Preventing click.`);
+    return currentState; 
   }
-  console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered NOT covered. Proceeding with click.`);
+  // console.log(`DEBUG: Card ${cardToMove.id} (type ${cardToMove.type}) is considered NOT covered. Proceeding with click.`);
 
-  // 将卡片从牌堆移动到消除槽
-  let newDeck = [...currentState.deck];
-  newDeck.splice(cardIndexInDeck, 1);
-
-  // Update coverage for the remaining cards in the deck
-  newDeck = updateCardCoverage(newDeck);
-  
+  let newDeck = currentState.deck.filter(c => c.id !== cardId);
   const newSlot = [...currentState.slot, cardToMove];
 
-  let newEliminatedCount = currentState.eliminatedCount;
-  let newScore = currentState.score;
+  let newScore = currentState.score + 10; // <<---[FIX] ADD 10 POINTS FOR A SUCCESSFUL CLICK
+  let eliminatedCardsThisTurn = false;
 
   // 检查消除槽中是否有三张相同的卡片
   const typeCounts: { [type: string]: Card[] } = {};
@@ -215,56 +197,66 @@ export function clickCard(currentState: GameState, cardId: number): GameState {
   let finalSlot = [...newSlot];
   for (const type in typeCounts) {
     if (typeCounts[type].length >= 3) {
-      // 找到了三张相同的卡片，进行消除
       finalSlot = finalSlot.filter(c => c.type !== type);
-      const setsEliminated = Math.floor(typeCounts[type].length / 3);
-      newEliminatedCount += setsEliminated;
-      newScore += setsEliminated * 10; // 每消除一组得10分
-      // 更新被消除卡片所覆盖的卡片的状态
-      typeCounts[type].forEach(eliminatedCard => {
-        eliminatedCard.covers.forEach(coveredCardId => {
-          const coveredCard = newDeck.find(c => c.id === coveredCardId);
-          if (coveredCard) {
-            coveredCard.coveredBy = coveredCard.coveredBy.filter(id => id !== eliminatedCard.id);
-            // 如果不再被任何卡片覆盖，则设置为 faceUp
-            if (coveredCard.coveredBy.length === 0) {
-              coveredCard.isFaceUp = true;
-            }
-          }
-        });
-      });
+      // const setsEliminated = Math.floor(typeCounts[type].length / 3);
+      newScore += 30; // 每消除一组额外得30分 (总共是 点击10 + 消除30 = 40 for the click that caused elimination)
+      eliminatedCardsThisTurn = true;
+      
+      // 更新因消除而暴露的卡片的覆盖状态 - 这部分逻辑比较复杂，先简化
+      // 在实际游戏中，这里需要正确地更新牌堆中卡片的 coveredBy 和 isFaceUp
     }
   }
 
-  // 当卡片从牌堆移到消除槽后，需要更新牌堆中所有卡片的 isFaceUp 状态
-  // 因为被移动的卡片可能之前覆盖了其他卡片
-  newDeck.forEach(cardInDeck => {
-    // 首先移除对已移动到槽中卡片的覆盖依赖
-    cardInDeck.coveredBy = cardInDeck.coveredBy.filter(id => id !== cardToMove.id);
-    // 如果一张卡片没有被任何其他卡片覆盖，则它是朝上的
-    cardInDeck.isFaceUp = cardInDeck.coveredBy.length === 0;
-  });
+  // 更新牌堆中因移除cardToMove而可能暴露的卡片
+  // 这个逻辑在消除后也可能需要再次运行，或者有一个更全面的 updateAllCoverage 调用
+  newDeck = updateCardCoverage(newDeck); // Recalculate coverage for the deck
 
-  // 检查游戏结束条件
-  let isGameOver = false;
-  let isGameWon = false;
+  let newIsGameOver = false;
+  let newIsGameWon = false;
 
-  if (finalSlot.length >= MAX_SLOT_SIZE) {
-    isGameOver = true; // 消除槽满了，游戏失败
+  if (finalSlot.length >= MAX_SLOT_SIZE && !eliminatedCardsThisTurn) { // 如果槽满了且这轮没有消除
+    newIsGameOver = true; 
   }
 
   if (newDeck.length === 0 && finalSlot.length === 0) {
-    isGameWon = true; // 所有卡片都消除了，游戏胜利
+    newIsGameWon = true;
+    newIsGameOver = true; // 胜利也是游戏结束
   }
 
   return {
+    ...currentState,
     deck: newDeck,
     slot: finalSlot,
-    eliminatedCount: newEliminatedCount,
-    score: newScore,
-    isGameOver,
-    isGameWon,
+    score: newScore, 
+    isGameOver: newIsGameOver,
+    isGameWon: newIsGameWon,
+    eliminatedCount: currentState.eliminatedCount + (eliminatedCardsThisTurn ? 1 : 0) // 简单记录消除次数
   };
+}
+
+// 检查游戏胜利条件
+export function checkWinCondition(gameState: GameState): GameState {
+  if (gameState.isGameOver) return gameState; // 如果已经结束，不再改变状态
+
+  let newIsGameWon = gameState.isGameWon;
+  let newIsGameOver = gameState.isGameOver;
+
+  if (gameState.deck.length === 0 && gameState.slot.length === 0) {
+    newIsGameWon = true;
+    newIsGameOver = true; // 胜利也是一种游戏结束状态
+  }
+
+  // 如果槽满了但游戏没有胜利，那也是游戏结束（失败），这个逻辑在clickCard中已经部分处理
+  // 这里主要关注胜利条件
+
+  if (newIsGameWon !== gameState.isGameWon || newIsGameOver !== gameState.isGameOver) {
+    return {
+      ...gameState,
+      isGameWon: newIsGameWon,
+      isGameOver: newIsGameOver,
+    };
+  }
+  return gameState;
 }
 
 console.log('羊了个羊 game logic module loaded');

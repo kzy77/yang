@@ -1,6 +1,6 @@
 // components/Card.tsx
 import React from 'react';
-import { Card as GameCard } from '../game/logic'; // Assuming Card type is exported from logic.ts
+import { Card as GameCard } from '@/game/logic'; // Assuming Card type is exported from logic.ts
 
 interface CardProps {
   cardData: GameCard;
@@ -106,9 +106,10 @@ const CardComponent: React.FC<CardProps> = ({ cardData, onClick, style, classNam
 
   return (
     <div
+      data-testid={`card-${cardData.id}`}
       style={{ ...style, zIndex: Math.round((cardData.initialZ || 0) * 100) }} // 使用空值合并确保initialZ未定义时默认为0
       className={combinedClassName}
-      onClick={() => cardData.isFaceUp && onClick(cardData.id)} // Clickable only if isFaceUp
+      onClick={() => cardData.isFaceUp && cardData.coveredBy.length === 0 && onClick(cardData.id)} // Clickable only if isFaceUp and coveredBy.length === 0
     >
       {displayContent}
       <span style={{ position: 'absolute', top: '2px', left: '2px', fontSize: '10px', color: '#888', zIndex: 1 }}>
