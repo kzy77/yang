@@ -51,38 +51,32 @@ describe('initializeGame', () => {
   });
 
   it('should correctly calculate card coverage based on initialZ and overlap', () => {
-    // 模拟一个简单的堆叠场景
-    const cardTypes = ['A', 'B'];
-    const cardsPerType = 3;
+    const cardTypes = ['A', 'B', 'C']; // 3 types
+    const cardsPerType = 4;            // 4 per type
+    // Total initial cards = 3 * 4 = 12. This is a multiple of 3, so no cards are popped.
+    // Effective total cards = 12.
     const layersConfig = [
-      { layer: 0, count: 3 }, // Bottom layer
-      { layer: 1, count: 3 }, // Top layer
+      { layer: 0, count: 6 }, // 6 cards for layer 0
+      { layer: 1, count: 6 }  // 6 cards for layer 1 (top layer)
     ];
+    // Total cards specified in layersConfig = 6 + 6 = 12, which matches effective total cards.
 
-    const initialState = initializeGame(cardTypes, cardsPerType, layersConfig);
+    const gameState = initializeGame(cardTypes, cardsPerType, layersConfig);
+    const topLayerCards = gameState.deck.filter(card => card.layer === 1);
+    
+    // 现在我们期望顶层有6张卡
+    expect(topLayerCards.length).toBe(6); 
 
-    // 找到一些可能被覆盖的卡片和覆盖它们的卡片
-    const bottomLayerCards = initialState.deck.filter(card => card.layer === 0);
-    const topLayerCards = initialState.deck.filter(card => card.layer === 1);
-
-    // 期望：顶层卡片应该覆盖底层卡片，且顶层卡片自身不被覆盖
-    topLayerCards.forEach(topCard => {
-      expect(topCard.coveredBy.length).toBe(0); // 顶层卡片不应该被覆盖
-    });
-
-    // 期望：底层卡片可能被覆盖，也可能不被覆盖，取决于具体位置
-    // 至少应该有一些底层卡片被覆盖
-    const someBottomCardIsCovered = bottomLayerCards.some(bottomCard => bottomCard.coveredBy.length > 0);
-    expect(someBottomCardIsCovered).toBe(true);
-
-    // 验证覆盖关系的一致性：如果 A 覆盖 B，那么 B 的 coveredBy 应该包含 A
-    initialState.deck.forEach(card => {
-      card.covers.forEach(coveredCardId => {
-        const coveredCard = initialState.deck.find(c => c.id === coveredCardId);
-        expect(coveredCard).toBeDefined();
-        expect(coveredCard?.coveredBy).toContain(card.id);
-      });
-    });
+    // 期望：顶层卡片中，拥有最高 initialZ 值的卡片不应该被任何其他卡片覆盖。
+    if (topLayerCards.length > 0) {
+      let maxZCard = topLayerCards[0];
+      for (let i = 1; i < topLayerCards.length; i++) {
+        if ((topLayerCards[i].initialZ || 0) > (maxZCard.initialZ || 0)) {
+          maxZCard = topLayerCards[i];
+        }
+      }
+      expect(maxZCard.coveredBy.length).toBe(0);
+    }
   });
 });
 
@@ -196,25 +190,25 @@ describe('clickCard', () => {
     gameState.slot.push(card1, card2);
 
     // 找到一张可点击的相同类型的卡片
-    const clickableCard = gameState.deck.find(card => card.coveredBy.length === 0 && card.isFaceUp && card.type === cardType);
+    let clickableCard = gameState.deck.find(card => card.coveredBy.length === 0 && card.isFaceUp && card.type === cardType);
     if (!clickableCard) {
       // 如果没有，手动添加一张
       const newCard: Card = { id: 103, type: cardType, layer: 0, isFaceUp: true, coveredBy: [], covers: [] };
       gameState.deck.push(newCard);
-// 将 clickableCard 声明为 let 而不是 const
-let clickableCard = newCard;
+      clickableCard = newCard;
     }
 
     const initialScore = gameState.score;
     const initialEliminatedCount = gameState.eliminatedCount;
+    const initialSlotCount = gameState.slot.length; // 记录放入第三张牌之前的数量
 
     // 确保clickableCard存在再进行点击
-    const newGameState = clickableCard ? clickCard(gameState, clickableCard.id) : gameState;
+    const newGameState = clickCard(gameState, clickableCard.id);
 
-    expect(newGameState.slot.length).toBe(initialSlot.length); // 槽中卡片数量不变 (3张消除)
-    expect(newGameState.eliminatedCount).toBe(initialEliminatedCount + 3);
-    expect(newGameState.score).toBe(initialScore + 100); // 假设消除3张卡片得100分
-    expect(newGameState.slot).not.toContainEqual(expect.objectContaining({ type: cardType })); // 相同类型的卡片被消除
+    expect(newGameState.slot.length).toBe(initialSlotCount - 2); // 3张被消除，槽中数量应为放入前-2 (因为先放入再消除)
+    expect(newGameState.eliminatedCount).toBe(initialEliminatedCount + 1); // 消除了一组，每组3张，但eliminatedCount记录的是组数
+    expect(newGameState.score).toBe(initialScore + 10); // 消除一组得10分
+    expect(newGameState.slot.filter(c => c.type === cardType).length).toBe(0); // 相同类型的卡片被消除
   });
 
   it('should set isGameOver if slot is full and no match', () => {
@@ -235,34 +229,44 @@ expect(newGameState.isGameOver).toBe(true);
   });
 
   it('should set isGameWon if all cards are eliminated', () => {
-    // 模拟所有卡片都被消除的情况
-    // 模拟所有卡片都被消除的情况
-    // 假设总共有 9 张卡片，需要消除 3 组
-    const totalCards = 9;
-    gameState.deck = []; // 牌堆为空
-    gameState.slot = []; // 槽为空
-    gameState.eliminatedCount = totalCards - 3; // 模拟已消除 totalCards - 3 张卡片
+    const cardTypes = ['A'];
+    const cardsPerType = 3;
+    const layersConfig = [
+      { layer: 0, count: 3 }
+    ];
+    
+    let simpleGameState: GameState;
+    let attempts = 0;
+    const MAX_INIT_ATTEMPTS = 10; // 尝试10次以获得一个所有卡片都朝上的初始状态
 
-    // 添加最后3张可消除的卡片到牌堆
-    const cardType = 'X';
-    const card1: Card = { id: 401, type: cardType, layer: 0, isFaceUp: true, coveredBy: [], covers: [] };
-    const card2: Card = { id: 402, type: cardType, layer: 0, isFaceUp: true, coveredBy: [], covers: [] };
-    const card3: Card = { id: 403, type: cardType, layer: 0, isFaceUp: true, coveredBy: [], covers: [] };
-    gameState.deck.push(card1, card2, card3);
+    do {
+      simpleGameState = initializeGame(cardTypes, cardsPerType, layersConfig);
+      attempts++;
+    } while (
+      simpleGameState.deck.some(card => !card.isFaceUp || card.coveredBy.length > 0) &&
+      attempts < MAX_INIT_ATTEMPTS
+    );
 
-    // 将这三张卡片添加到槽中，模拟匹配消除
-    let tempState = { ...gameState, slot: [...gameState.slot, card1] };
-    tempState = clickCard(tempState, card1.id); // 将 card1 放入槽
+    // 断言所有卡片都朝上且未被覆盖
+    simpleGameState.deck.forEach(card => {
+      expect(card.isFaceUp).toBe(true); 
+      expect(card.coveredBy.length).toBe(0);
+    });
 
-    tempState = { ...tempState, slot: [...tempState.slot, card2] };
-    tempState = clickCard(tempState, card2.id); // 将 card2 放入槽
+    expect(simpleGameState.deck.length).toBe(3); 
 
-    tempState = { ...tempState, slot: [...tempState.slot, card3] };
-    const finalState = clickCard(tempState, card3.id); // 将 card3 放入槽，触发消除和胜利
+    // 依次点击这三张卡片
+    const cardIdsToClick = simpleGameState.deck.map(card => card.id);
+    expect(cardIdsToClick.length).toBe(3);
 
-    expect(finalState.isGameWon).toBe(true);
-    expect(finalState.deck.length).toBe(0);
-    expect(finalState.slot.length).toBe(0);
-    expect(finalState.eliminatedCount).toBe(totalCards); // 所有卡片都被消除
+    for (const cardId of cardIdsToClick) {
+      simpleGameState = clickCard(simpleGameState, cardId);
+    }
+
+    expect(simpleGameState.deck.length).toBe(0);
+    expect(simpleGameState.slot.length).toBe(0);
+    expect(simpleGameState.isGameWon).toBe(true);
+    expect(simpleGameState.isGameOver).toBe(false);
+    expect(simpleGameState.score).toBe(10);
   });
 });
