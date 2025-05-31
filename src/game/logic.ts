@@ -115,11 +115,9 @@ export function initializeGame(cardTypes: string[], cardsPerType: number, layers
 
   // 5. 根据覆盖关系更新 isFaceUp 状态
   deck.forEach(card => {
-    const previouslyFaceUp = card.isFaceUp;
-    card.isFaceUp = card.coveredBy.length === 0;
-    // if (previouslyFaceUp !== card.isFaceUp || !card.isFaceUp) { // Log changes or if still face down
-    //   console.log(`DEBUG: Card ${card.id} (type ${card.type}, layer ${card.layer}, initialZ ${card.initialZ?.toFixed(2)}) isFaceUp: ${card.isFaceUp}. Covered by: [${card.coveredBy.join(', ')}]`);
-    // }
+      card.isFaceUp = card.coveredBy.length === 0;
+    // 启用调试日志
+    console.log(`DEBUG: Card ${card.id} (type ${card.type}, layer ${card.layer}, initialZ ${card.initialZ?.toFixed(2)}) isFaceUp: ${card.isFaceUp}. Covered by: [${card.coveredBy.join(', ')}]`);
   });
 
   return {
