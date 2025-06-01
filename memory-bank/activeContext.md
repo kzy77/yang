@@ -30,3 +30,5 @@
 * [2025-06-02 01:50:59] - 完成对“重新开始游戏并刷新排名”方案的架构审查，批准方案并提出实施建议（见 [`memory-bank/decisionLog.md`](memory-bank/decisionLog.md)）。
 * [2025-06-02 01:54:15] - 在 GameInterface.tsx 中实现了可复用的 fetchRankingData 函数，并在组件挂载、startGame 和 submitScore 成功后调用，以刷新排名。
 * [2025-06-02 03:40:15] - Completed UI adjustments (top padding, title size/margin, slot label size/margin) in globals.css and responsive.css based on user feedback.
+* [2025-06-02 03:54:00] - Completed architectural review of scrollbar elimination strategies. Confirmed margin reduction implementation ([`memory-bank/decisionLog.md:132`](memory-bank/decisionLog.md:132)) and recommended implementing `max-height`/`overflow-y` for `.ranking-list` ([`memory-bank/decisionLog.md:147`](memory-bank/decisionLog.md:147) - *Note: Line number adjusted based on previous insertion*).
+* [2025-06-02 03:56:00] - Applied `max-height` and `overflow-y: auto` to `.ranking-list` in [`src/app/globals.css`](src/app/globals.css:116) to control ranking list scrolling.

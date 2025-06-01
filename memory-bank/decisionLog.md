@@ -142,3 +142,26 @@ Applied specific CSS changes to address user feedback based on image annotations
 - **Adjusted Elimination Slot Area:** Modified `.slot-area-title` in [`src/components/responsive.css`](src/components/responsive.css:317):
     - Changed `font-size` from `1.7em` to `1.4em` ([line 318](src/components/responsive.css:318)).
     - Changed `margin-top` from `25px` to `15px` ([line 320](src/components/responsive.css:320)), effectively moving the slot area up.
+---
+### Decision (Architecture/CSS)
+[2025-06-02 03:54:00] - Recommend Strategy for Ranking List Overflow Control
+
+**Rationale:**
+Reviewing strategies to eliminate game interface scrollbars revealed that while reducing element margins (Strategy 2, partially implemented per [`memory-bank/decisionLog.md:132`](memory-bank/decisionLog.md:132)) helps overall compactness, it doesn't specifically address potential overflow from a long ranking list. Strategy 1 (setting `max-height` and `overflow-y: auto` for the `.ranking-list` container) is the standard and architecturally sound approach to contain scrolling within the list element itself, preventing page-level scrollbars and aligning with responsive design principles. This strategy was proposed but not yet documented or implemented according to the Memory Bank.
+
+**Implementation Details:**
+- **Recommendation:** Implement Strategy 1.
+    1.  Apply `max-height` to the `.ranking-list` element (or its direct container if more appropriate) in the relevant CSS file (likely [`src/app/globals.css`](src/app/globals.css) where other ranking styles exist - see [`memory-bank/decisionLog.md:93`](memory-bank/decisionLog.md:93)). Consider using viewport units (e.g., `vh`) or media queries for responsive height limits.
+    2.  Apply `overflow-y: auto;` to the same element to enable vertical scrolling only when content exceeds the `max-height`.
+    3.  Ensure scrollbar styling (if any) is consistent with the application's design.
+---
+### Decision (Code)
+[2025-06-02 03:56:00] - Implement Ranking List Overflow Control via CSS
+
+**Rationale:**
+To prevent the ranking list from causing page-level scrollbars when it contains many entries, and following the recommendation in [`memory-bank/decisionLog.md:147`](memory-bank/decisionLog.md:147), the `.ranking-list` element was constrained in height and configured to scroll internally. This maintains the overall page layout integrity.
+
+**Details:**
+- Added the following CSS rules to the `.ranking-list` selector in [`src/app/globals.css`](src/app/globals.css:116):
+    - `max-height: calc(100vh - 250px);` (Limits height based on viewport, accounting for other UI elements)
+    - `overflow-y: auto;` (Enables vertical scrollbar only when content exceeds max-height)
