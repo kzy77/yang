@@ -33,10 +33,10 @@
 }
 
 .game-title {
-  font-size: 2.5em;
+  font-size: 2.0em; /* Reduced font size */
   color: var(--secondary-color);
-  margin-bottom: 15px;
-  font-weight: 600;
+  margin-bottom: 5px; /* Reduced bottom margin */
+  font-weight: 400;
 }
 
 .score-display {
@@ -315,10 +315,10 @@ position: relative; /* Ensure stacking context for z-index and absolute children
 
 /* Elimination Slot */
 .slot-area-title {
-  font-size: 1.7em;
+  font-size: 1.4em; /* Reduced font size */
   color: var(--secondary-color);
-  margin-top: 25px;
-  margin-bottom: 15px;
+  margin-top: 5px; /* Reduced top margin */
+  margin-bottom: 5px;
   font-weight: 500;
 }
 

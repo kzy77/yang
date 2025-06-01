@@ -127,3 +127,18 @@ This file records architectural and implementation decisions using a list format
     1.  在 [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx) 中创建可复用的 `async` 函数 `fetchRankingData`，封装 API 调用 (`/api/ranking`) 及状态更新 (`rankingData`, `rankingLoading`, `rankingError`)。
     2.  在 `useEffect` (mount 时)、`handleRestartGame` (调用 `startGame` 后) 以及分数提交成功后调用 `fetchRankingData`。
     3.  确保妥善处理加载和错误状态。
+---
+### Decision (Code)
+[2025-06-02 03:40:05] - Implement UI Adjustments based on Visual Feedback
+
+**Rationale:**
+Applied specific CSS changes to address user feedback based on image annotations, aiming to reduce vertical spacing and adjust element sizes for a more compact layout as requested.
+
+**Details:**
+- **Reduced Top Padding:** Modified `.main-layout-container` in [`src/app/globals.css`](src/app/globals.css:81) from `padding: 20px;` to `padding: 10px 20px;`.
+- **Adjusted Main Title:** Modified `.game-title` in [`src/components/responsive.css`](src/components/responsive.css:35):
+    - Changed `font-size` from `2.5em` to `2.0em` ([line 36](src/components/responsive.css:36)).
+    - Changed `margin-bottom` from `15px` to `10px` ([line 38](src/components/responsive.css:38)).
+- **Adjusted Elimination Slot Area:** Modified `.slot-area-title` in [`src/components/responsive.css`](src/components/responsive.css:317):
+    - Changed `font-size` from `1.7em` to `1.4em` ([line 318](src/components/responsive.css:318)).
+    - Changed `margin-top` from `25px` to `15px` ([line 320](src/components/responsive.css:320)), effectively moving the slot area up.

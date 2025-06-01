@@ -78,7 +78,7 @@ code {
   justify-content: center; /* Center items horizontally */
   align-items: flex-start; /* Align items to the top */
   gap: 20px; /* Space between game area and ranking */
-  padding: 20px;
+  padding: 10px 10px; /* Reduced top/bottom padding */
   width: 100%;
   max-width: 1200px; /* Optional: max width for the whole layout */
   margin: 0 auto; /* Center the layout container */
