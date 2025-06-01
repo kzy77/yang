@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 // src/app/api/submit-score/route.ts
 import { NextResponse } from 'next/server';
 import { Pool, PoolClient } from 'pg';

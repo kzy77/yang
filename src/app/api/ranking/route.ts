@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 // src/app/api/ranking/route.ts
 import { NextResponse } from 'next/server';
 import { Pool, PoolClient } from 'pg'; // Import PoolClient
