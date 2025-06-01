@@ -9,6 +9,12 @@
 - [x] 验证 Cloudflare Pages 配置
 - [x] 检查新的部署日志并解决剩余警告
 
+# 完善 README.md 部署说明
+
+- [x] 添加 Cloudflare Pages GitHub 部署说明
+- [x] 添加 Vercel GitHub 部署说明
+- [x] 提交并推送更改
+
 ## 核心功能
 - [x] 游戏逻辑实现（卡片匹配、消除规则）
 - [x] 游戏状态管理（胜利/失败条件）
