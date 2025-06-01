@@ -71,3 +71,113 @@ code {
   background-image: url('/path/to/card-back.png');
 }
 */
+/* Layout for Game Interface + Ranking */
+.main-layout-container {
+  display: flex;
+  flex-direction: row; /* Default: side-by-side */
+  justify-content: center; /* Center items horizontally */
+  align-items: flex-start; /* Align items to the top */
+  gap: 20px; /* Space between game area and ranking */
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px; /* Optional: max width for the whole layout */
+  margin: 0 auto; /* Center the layout container */
+  box-sizing: border-box;
+}
+
+/* Adjust game container if needed within the flex layout */
+.game-container {
+  flex-grow: 1; /* Allow game container to take available space */
+  /* Optionally set a max-width if needed */
+  /* max-width: 600px; */
+}
+
+/* Ranking Area Styles */
+.ranking-container {
+  width: 300px; /* Fixed width for the ranking sidebar */
+  flex-shrink: 0; /* Prevent ranking container from shrinking */
+  padding: 15px;
+  background-color: var(--background-medium, #e9ecef); /* Use existing variable or fallback */
+  border-radius: var(--border-radius-md, 8px);
+  box-shadow: 0 2px 8px var(--shadow-color, rgba(0, 0, 0, 0.15));
+  height: fit-content; /* Adjust height based on content */
+}
+
+.ranking-title {
+  font-size: 1.5em;
+  color: var(--secondary-color, #282c34);
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.ranking-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 5px;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95em;
+}
+
+.ranking-item:last-child {
+  border-bottom: none;
+}
+
+.ranking-item .rank {
+  font-weight: bold;
+  min-width: 30px; /* Ensure rank number alignment */
+  text-align: right;
+  margin-right: 10px;
+}
+
+.ranking-item .username {
+  flex-grow: 1; /* Allow username to take space */
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 10px;
+}
+
+.ranking-item .score {
+  min-width: 70px; /* Alignment */
+  text-align: right;
+  margin-right: 10px;
+  color: #007bff; /* Example color for score */
+}
+
+.ranking-item .time {
+  min-width: 60px; /* Alignment */
+  text-align: right;
+  font-size: 0.9em;
+  color: #6c757d; /* Example color for time */
+}
+
+.ranking-error {
+  color: #dc3545; /* Red for errors */
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Responsive adjustments for the layout */
+@media (max-width: 900px) { /* Adjust breakpoint as needed */
+  .main-layout-container {
+    flex-direction: column; /* Stack game and ranking vertically */
+    align-items: center; /* Center items when stacked */
+  }
+
+  .ranking-container {
+    width: 90%; /* Take more width when stacked */
+    max-width: 500px; /* Optional max-width */
+    margin-top: 20px;
+  }
+}

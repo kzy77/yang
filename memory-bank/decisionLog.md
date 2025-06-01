@@ -77,3 +77,53 @@ This file records architectural and implementation decisions using a list format
     - 将 `background-color` 从 `var(--secondary-color)` 修改为 `#cccccc` (中灰色)。
     - 将 `background-image` 中的条纹颜色从 `rgba(255,255,255,0.05)` 修改为 `rgba(0,0,0,0.08)`，并调整了条纹大小，使其在新的灰色背景上更协调。
     - 调整了 `color` 属性为 `#555555` 以确保文本/图标在灰色背景上的可读性。
+---
+### Decision (Code)
+[2025-06-02 00:57:45] - 实现排名功能的前端展示
+
+**Rationale:**
+根据用户要求，在游戏界面右侧展示 Top 10 排名。选择在主要的 `GameInterface` 组件中实现此功能，因为它管理着整体游戏状态和布局。使用标准的 React `useState` 和 `useEffect` hooks 来管理排名数据的获取和状态。采用 Flexbox 布局将游戏区域和排名区域并排显示，并添加了响应式处理，在较小屏幕上垂直堆叠。
+
+**Details:**
+- 在 [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx) 中：
+    - 添加了 `rankingData`, `rankingLoading`, `rankingError` 状态。
+    - 添加了 `useEffect` hook，在组件挂载时调用 `/api/ranking` 获取数据。
+    - 修改了 JSX，添加了 `.main-layout-container` (Flexbox) 和 `.ranking-container`。
+    - 在 `.ranking-container` 中渲染排名列表，包含加载和错误状态处理。
+- 在 [`src/app/globals.css`](src/app/globals.css) 中：
+    - 添加了 `.main-layout-container`, `.ranking-container`, `.ranking-list`, `.ranking-item` 等 CSS 规则，定义了布局（右侧边栏）、宽度、内边距、边框和列表项样式。
+    - 添加了媒体查询，在小屏幕上将布局改为垂直堆叠。
+---
+### Decision (Code)
+[2025-06-02 01:04:24] - 改进环境变量处理说明和 SQL 脚本交付方式
+
+**Rationale:**
+根据用户反馈，为了提高清晰度和易用性：
+1.  环境变量（如 `DATABASE_URL`）的需求应直接在代码中通过注释明确说明，并建议使用 `.env.local` 文件进行本地配置。
+2.  数据库 DDL 脚本应提供为单独的 `.sql` 文件，而不是嵌入在聊天文本中，以便于用户直接执行。
+
+**Details:**
+- 修改了 [`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts)，添加了详细注释，解释 `DATABASE_URL` 的必要性以及如何在 `.env.local` 中设置。
+- 创建了 [`sql/schema.sql`](sql/schema.sql) 文件，包含了 `CREATE TABLE game_results` 和 `CREATE INDEX idx_ranking` 的 SQL 语句，并添加了执行说明。
+---
+### Decision (Code)
+[2025-06-02 01:34:09] - 确定用户标识符方案为“简单昵称输入”
+
+**Rationale:**
+在讨论了使用 IP 地址（因隐私和技术问题被否定）或其他标识符后，根据用户选择，决定采用最简单的方案：在游戏结束时允许玩家输入昵称，并将其存储在 `game_results` 表的 `username` 列中。接受可能存在的昵称重复。此方案下，现有的数据库表结构和排名查询逻辑无需修改。
+
+**Details:**
+- 保持 [`sql/schema.sql`](sql/schema.sql) 中 `game_results` 表的 `username VARCHAR(255) NOT NULL` 定义。
+- 后续需要实现前端输入昵称和后端保存昵称及得分的功能。
+---
+### Decision (Architecture/Code)
+[2025-06-02 01:50:23] - 批准在 `GameInterface.tsx` 中刷新排名的方案
+
+**Rationale:**
+该方案（在 `handleRestartGame` 和分数提交成功后调用 `fetchRanking`）与该组件现有的数据获取模式（直接 API 调用，如 `useEffect` 中获取初始排名）一致，且符合 [`memory-bank/decisionLog.md:81`](memory-bank/decisionLog.md:81) 的记录。它直接满足了刷新排名的需求，且避免了引入不必要的复杂性（如全局状态管理），因为 [`memory-bank/systemPatterns.md`](memory-bank/systemPatterns.md) 中未定义此类模式。
+
+**Implementation Details:**
+- **建议:**
+    1.  在 [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx) 中创建可复用的 `async` 函数 `fetchRankingData`，封装 API 调用 (`/api/ranking`) 及状态更新 (`rankingData`, `rankingLoading`, `rankingError`)。
+    2.  在 `useEffect` (mount 时)、`handleRestartGame` (调用 `startGame` 后) 以及分数提交成功后调用 `fetchRankingData`。
+    3.  确保妥善处理加载和错误状态。
