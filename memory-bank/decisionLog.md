@@ -65,3 +65,15 @@ This file records architectural and implementation decisions using a list format
     - 移除了之前的 `.game-card.is-unclickable::before` 规则。
     - 修改了内容元素的 `z-index` 规则，使用 `.game-card-responsive` 选择器。
     - 添加了新的 `.game-card-responsive.is-unclickable.is-face-up::before` 规则，应用 `background-color: rgba(50, 50, 50, 0.15);` 和 `z-index: 1;`。
+---
+### Decision (Code)
+[2025-06-02 00:39:06] - 调整 Face-Down 卡片的背景和条纹颜色
+
+**Rationale:**
+用户反馈指出，之前 `face-down` 卡片的深色条纹背景（`#282c34`）视觉上过暗。为了满足用户希望颜色变浅但仍与可点击卡片（白色背景）形成对比的要求，对样式进行了调整。
+
+**Details:**
+- 在 [`src/components/responsive.css`](src/components/responsive.css) 的 `.game-card-responsive.face-down` 规则中：
+    - 将 `background-color` 从 `var(--secondary-color)` 修改为 `#cccccc` (中灰色)。
+    - 将 `background-image` 中的条纹颜色从 `rgba(255,255,255,0.05)` 修改为 `rgba(0,0,0,0.08)`，并调整了条纹大小，使其在新的灰色背景上更协调。
+    - 调整了 `color` 属性为 `#555555` 以确保文本/图标在灰色背景上的可读性。

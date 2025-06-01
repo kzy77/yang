@@ -145,16 +145,18 @@ position: relative; /* Ensure stacking context for z-index and absolute children
 }
 
 .game-card-responsive.face-down {
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
+  background-color: #cccccc; /* Lighter gray background for face-down cards */
+  color: #555555; /* Adjust text/icon color for contrast on gray */
   /* Add a pattern or texture for face-down cards */
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(255,255,255,0.05),
-    rgba(255,255,255,0.05) 10px,
-    transparent 10px,
-    transparent 20px
+    rgba(0,0,0,0.08), /* Slightly darker, subtle stripes */
+    rgba(0,0,0,0.08) 8px, /* Adjusted size */
+    transparent 8px,
+    transparent 16px /* Adjusted size */
   );
+  /* Ensure content is still visible */
+  /* z-index for content is handled in globals.css */
 }
 
 .game-card-responsive:hover {
