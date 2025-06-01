@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   serverExternalPackages: ['next'],
+  // Disable Next.js telemetry
+  telemetry: false,
 };
 
 export default nextConfig;
