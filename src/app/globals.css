@@ -21,7 +21,53 @@ code {
   min-height: 100vh; /* Ensure the root takes at least the full viewport height */
 }
 
-.card.face-down {
-  opacity: 0.5;
+/* Base style for game cards */
+.game-card {
+  position: relative; /* Needed for absolute positioning of pseudo-elements */
+  /* Add other base card styles here if needed, e.g., border-radius, background, padding */
+  border-radius: 8px; /* Example: match the visual */
+  background-color: white; /* Example: base background */
+  padding: 5px; /* Example: base padding */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Example: base shadow */
+  display: flex; /* Align icon */
+  justify-content: center; /* Center icon */
+  align-items: center; /* Center icon */
+  overflow: hidden; /* Ensure overlay respects border-radius */
+}
+
+/* Styles for content elements to be above backgrounds/overlays */
+/* Assuming 'game-card-responsive' is the class used, adjust if needed */
+.game-card-responsive .card-type-display {
+  position: relative; /* Create stacking context */
+  z-index: 2; /* Ensure icon is above background/overlay */
+  width: 80%; /* Adjust size as needed */
+  height: 80%; /* Adjust size as needed */
+}
+/* Ensure ID span is also above */
+.game-card-responsive > span[style*="position: absolute"] {
+  /* Keep position: absolute from inline style, just ensure z-index */
+  z-index: 2; /* Ensure ID is above background/overlay */
+}
+
+/* Set cursor for all unclickable cards */
+.game-card-responsive.is-unclickable {
   cursor: not-allowed;
 }
+
+/* Add subtle overlay ONLY for cards that are face-up but covered */
+.game-card-responsive.is-unclickable.is-face-up::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(50, 50, 50, 0.15); /* Subtle overlay for covered cards */
+    border-radius: inherit;
+    z-index: 1; /* Below content (z-index 2), above base background (z-index 0) */
+    pointer-events: none;
+}
+
+/* 如果 face-down 状态除了透明度之外还有其他特定样式，可以保留或添加 */
+/* 例如：
+.game-card.face-down {
+  background-image: url('/path/to/card-back.png');
+}
+*/

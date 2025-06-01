@@ -102,7 +102,9 @@ const CardComponent: React.FC<CardProps> = ({ cardData, onClick, style, classNam
   const displayContent = <span className="card-type-display">{iconContent}</span>;
 
   // Combine provided className with default and conditional classes
-  const combinedClassName = `game-card ${className || ''} ${!cardData.isFaceUp ? 'is-disabled face-down' : 'is-face-up'}`.trim();
+  const isUnclickable = !cardData.isFaceUp || cardData.coveredBy.length > 0;
+    const faceUpStateClass = cardData.isFaceUp ? 'is-face-up' : 'face-down';
+    const combinedClassName = `game-card ${className || ''} ${isUnclickable ? 'is-unclickable' : ''} ${faceUpStateClass}`.trim().replace(/\s+/g, ' ');
 
   return (
     <div

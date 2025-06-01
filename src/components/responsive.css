@@ -105,6 +105,7 @@
 }
 
 .game-card-responsive {
+position: relative; /* Ensure stacking context for z-index and absolute children */
   width: var(--card-width);
   height: var(--card-height);
   margin: var(--card-margin);
@@ -196,15 +197,15 @@
 }
 
 /* When the card is not face up, clip its content to show only a part */
-/* 当卡片未翻开时隐藏卡片内容 */
-.game-card-responsive:not(.is-face-up) .card-type-display {
+/* 当卡片未翻开时隐藏卡片内容 - Commented out based on user feedback (icons should be visible) */
+/* .game-card-responsive:not(.is-face-up) .card-type-display {
     clip-path: inset(0 0 70% 0);
-}
+} */
     /* clip-path: inset(0 0 70% 0); Reveal bottom 30% */
-/* 当卡片未翻开时隐藏卡片内容 */
-.game-card-responsive:not(.is-face-up) .card-type-display {
+/* 当卡片未翻开时隐藏卡片内容 - Commented out based on user feedback (icons should be visible) */
+/* .game-card-responsive:not(.is-face-up) .card-type-display {
     clip-path: inset(0 0 70% 0);
-}
+} */
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
