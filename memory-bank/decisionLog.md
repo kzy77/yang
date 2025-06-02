@@ -190,3 +190,13 @@ Attempting to deploy API routes ([`src/app/api/ranking/route.ts`](src/app/api/ra
     - [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts:1)
 - This means these routes will run as Node.js serverless functions on Cloudflare Pages, not Edge functions.
 - Cloudflare Hyperdrive integration (Decision [2025-06-02 17:01:00]) is effectively paused or needs re-evaluation for Node.js runtime, as its primary benefit is for Edge functions. Direct DB connection via `pg` pool in Node.js runtime remains the current working method.
+---
+**Timestamp:** 2025-06-02 23:38:00
+**Decision:** 将 API 路由 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)) 重构为 Edge Runtime 并使用 `@neondatabase/serverless`。
+**Rationale:** 基于用户明确请求以启用 Edge Runtime 功能，覆盖了先前因 `pg` 库不兼容而保留 Node.js runtime 的决策 ([`memory-bank/decisionLog.md:182`](memory-bank/decisionLog.md:182))。`@neondatabase/serverless` 是选定的 Edge 兼容数据库驱动。
+**Implementation Details:**
+*   在两个路由文件中将 `export const runtime = 'edge';` 添加或修改。
+*   从项目中移除了 `pg` 库依赖。
+*   在路由中导入并使用了 `@neondatabase/serverless` 提供的 `neon` 和 `sql` 函数来执行数据库查询。
+*   解决了与 `sql` 模板标签相关的初始 TypeScript 编译错误。
+---

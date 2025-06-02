@@ -1,14 +1,9 @@
-export const runtime = 'nodejs';
+export const runtime = 'edge'; // Changed from 'nodejs'
 // src/app/api/submit-score/route.ts
 import { NextResponse } from 'next/server';
-import { Pool, PoolClient } from 'pg';
+import { neon } from '@neondatabase/serverless'; // ONLY import neon
 
-// Reuse the pool configuration logic, ensure DATABASE_URL is set
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({
-  connectionString: connectionString,
-
-});
+// Removed pg Pool initialization
 
 // Basic input validation (can be expanded)
 interface SubmitScorePayload {
@@ -17,9 +12,12 @@ interface SubmitScorePayload {
   time?: number; // Expecting time in milliseconds from frontend
 }
 
+// Reuse the connection string logic, ensure DATABASE_URL is set
+const connectionString = process.env.DATABASE_URL;
+
 export async function POST(request: Request) {
   console.log('API route /api/submit-score called');
-  let client: PoolClient | null = null;
+  // Removed client variable declaration
 
   if (!connectionString) {
     return NextResponse.json({ error: 'Database connection is not configured.' }, { status: 500 });
@@ -29,7 +27,7 @@ export async function POST(request: Request) {
     const payload: SubmitScorePayload = await request.json();
     const { username, score, time } = payload;
 
-    // Validate input
+    // Validate input (kept existing validation)
     if (!username || typeof username !== 'string' || username.trim().length === 0) {
       return NextResponse.json({ error: 'Invalid username provided.' }, { status: 400 });
     }
@@ -40,52 +38,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid time provided.' }, { status: 400 });
     }
 
-    // Limit username length (optional but recommended)
+    // Limit username length (kept existing logic)
     const trimmedUsername = username.trim().substring(0, 255); // Max length based on schema
 
-    client = await pool.connect();
-    console.log('Database client connected for submit');
+    // Removed pool.connect()
+    console.log('Connecting to database via Neon serverless driver for submit...');
 
-    const query = `
+    // Execute query using neon function directly as a tagged template
+    // Parameters are embedded using ${} syntax
+    console.log(`Executing insert query with params: ${trimmedUsername}, ${score}, ${time}`);
+    const result = await neon(connectionString)`
       INSERT INTO game_results (username, score, completion_time_ms)
-      VALUES ($1, $2, $3)
+      VALUES (${trimmedUsername}, ${score}, ${time})
       RETURNING id; -- Optional: return the ID of the new record
-    `;
-    const values = [trimmedUsername, score, time];
+    ` as [{ id: number }]; // Asserting the expected return type
 
-    console.log('Executing insert query:', query, values);
-    const result = await client.query(query, values);
-    console.log('Insert successful, new record ID:', result.rows[0]?.id);
+    const newId = result[0]?.id;
+    console.log('Insert successful, new record ID:', newId);
 
-    return NextResponse.json({ success: true, message: 'Score submitted successfully.', id: result.rows[0]?.id });
+    return NextResponse.json({ success: true, message: 'Score submitted successfully.', id: newId });
 
   } catch (error) {
     console.error('Error submitting score:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
      let status = 500;
      let errorType = 'Failed to submit score.';
-     // Add specific error checks if needed
-     if (errorMessage.includes('connect ECONNREFUSED') || errorMessage.includes('password authentication failed')) {
+     // Add specific error checks if needed (kept existing checks)
+     if (errorMessage.includes('connect') || errorMessage.includes('authentication failed') || errorMessage.includes('failed to connect')) {
          errorType = 'Database connection error.';
      } else if (errorMessage.includes('violates not-null constraint')) {
          errorType = 'Missing required data field.';
          status = 400;
+     } else if (errorMessage.includes('relation "game_results" does not exist')) {
+         errorType = 'Database table "game_results" not found.';
      }
 
     return NextResponse.json(
       { error: errorType, details: errorMessage },
       { status: status }
     );
-  } finally {
-    if (client) {
-      client.release();
-      console.log('Database client released after submit');
-    }
   }
+  // Removed finally block with client.release()
 }
 
-// Pool error handling (reuse from ranking route or centralize)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-pool.on('error', (err: Error, client: PoolClient) => {
-  console.error('Unexpected error on idle client', err);
-});
+// Removed pool.on('error') handler

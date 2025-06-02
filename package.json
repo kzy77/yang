@@ -16,6 +16,7 @@
   "dependencies": {
     "@eslint/config-array": "^0.20.0",
     "@eslint/object-schema": "^2.1.6",
+    "@neondatabase/serverless": "^1.0.0",
     "@types/pg": "^8.15.3",
     "glob": "^11.0.2",
     "next": "^15.3.3",

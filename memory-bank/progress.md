@@ -11,6 +11,7 @@ This file tracks the project's progress using a task list format.
 * [2025-06-02 17:43:59] - Completed Task: Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46).
 * [2025-06-02 20:22:00] - Completed Task: Fixed TypeScript type error in [`src/game/logic.ts`](src/game/logic.ts:244).
 
+* [2025-06-02 23:38:00] - Completed Task: 将 API 路由 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)) 重构为 Edge Runtime 兼容，并使用 `@neondatabase/serverless`。
 ## Current Tasks
 
 *   
@@ -30,3 +31,4 @@ This file tracks the project's progress using a task list format.
 ## Next Steps
 * [2025-06-02 03:54:00] - Implement recommended ranking list overflow control: Apply `max-height` and `overflow-y: auto` to `.ranking-list` as per decision [`memory-bank/decisionLog.md:147`](memory-bank/decisionLog.md:147) (*Note: Line number adjusted*).
 * [2025-06-02 03:56:10] - Completed Task: Implement ranking list overflow control (`max-height`/`overflow-y`) in [`src/app/globals.css`](src/app/globals.css:116) as per decision [`memory-bank/decisionLog.md:147`](memory-bank/decisionLog.md:147).
+* [2025-06-02 20:53:51] - Completed Task: Reviewed API runtime configuration. No changes made to [`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts) or [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts) runtime, maintaining 'nodejs' as per decision log ([`memory-bank/decisionLog.md:182`](memory-bank/decisionLog.md:182)).

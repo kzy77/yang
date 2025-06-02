@@ -12,6 +12,7 @@
 * [2025-06-02 17:35:06] - 实施 Node.js runtime 并准备重新部署。
 ## Recent Changes
 
+* [2025-06-02 23:37:00] - API 路由 [`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts) 和 [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts) 已成功重构为使用 Edge Runtime 和 `@neondatabase/serverless`，覆盖了之前的 Node.js runtime 决策 ([`memory-bank/decisionLog.md:182`](memory-bank/decisionLog.md:182))。
 *   
 * [2025-06-02 17:43:48] - Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46) by changing `catch (e)` to `catch {}` as the error object was intentionally unused.
 * [2025-06-02 20:22:00] - Fixed TypeScript type error (`Type 'true' is not assignable to type 'false'`) in [`src/game/logic.ts`](src/game/logic.ts:244) by explicitly typing `newIsGameOver` as `boolean` on [line 240](src/game/logic.ts:240) to prevent incorrect type narrowing.
@@ -36,3 +37,4 @@
 * [2025-06-02 03:54:00] - Completed architectural review of scrollbar elimination strategies. Confirmed margin reduction implementation ([`memory-bank/decisionLog.md:132`](memory-bank/decisionLog.md:132)) and recommended implementing `max-height`/`overflow-y` for `.ranking-list` ([`memory-bank/decisionLog.md:147`](memory-bank/decisionLog.md:147) - *Note: Line number adjusted based on previous insertion*).
 * [2025-06-02 03:56:00] - Applied `max-height` and `overflow-y: auto` to `.ranking-list` in [`src/app/globals.css`](src/app/globals.css:116) to control ranking list scrolling.
 * [2025-06-02 17:01:00] - Current Focus: Design and document the architecture for integrating Cloudflare Hyperdrive with the existing Next.js application deployed on Cloudflare Pages. Update Memory Bank with the decision. Prepare for deployment configuration.
+* [2025-06-02 20:53:30] - Reviewed request to set API runtime to 'edge'. Kept 'nodejs' runtime for [`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts) and [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts) based on decision log ([`memory-bank/decisionLog.md:182`](memory-bank/decisionLog.md:182)) and user confirmation.
