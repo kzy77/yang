@@ -43,7 +43,7 @@ const GameInterface: React.FC = () => {
       const response = await fetch('/api/ranking');
       if (!response.ok) {
         let errorDetails = 'Failed to fetch ranking';
-        try { const errorData = await response.json(); errorDetails = errorData.error || errorData.details || errorDetails; } catch (e) {}
+        try { const errorData = await response.json(); errorDetails = errorData.error || errorData.details || errorDetails; } catch {} {}
         throw new Error(`${response.status}: ${errorDetails}`);
       }
       const data: RankingItem[] = await response.json();

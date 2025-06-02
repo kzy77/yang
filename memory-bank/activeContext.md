@@ -13,6 +13,7 @@
 ## Recent Changes
 
 *   
+* [2025-06-02 17:43:48] - Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46) by changing `catch (e)` to `catch {}` as the error object was intentionally unused.
 
 ## Open Questions/Issues
 
