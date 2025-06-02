@@ -14,6 +14,7 @@
 
 *   
 * [2025-06-02 17:43:48] - Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46) by changing `catch (e)` to `catch {}` as the error object was intentionally unused.
+* [2025-06-02 20:22:00] - Fixed TypeScript type error (`Type 'true' is not assignable to type 'false'`) in [`src/game/logic.ts`](src/game/logic.ts:244) by explicitly typing `newIsGameOver` as `boolean` on [line 240](src/game/logic.ts:240) to prevent incorrect type narrowing.
 
 ## Open Questions/Issues
 

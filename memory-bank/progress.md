@@ -9,6 +9,7 @@ This file tracks the project's progress using a task list format.
 
 *   
 * [2025-06-02 17:43:59] - Completed Task: Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46).
+* [2025-06-02 20:22:00] - Completed Task: Fixed TypeScript type error in [`src/game/logic.ts`](src/game/logic.ts:244).
 
 ## Current Tasks
 

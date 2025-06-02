@@ -237,7 +237,7 @@ export function checkWinCondition(gameState: GameState): GameState {
   if (gameState.isGameOver) return gameState; // 如果已经结束，不再改变状态
 
   let newIsGameWon = gameState.isGameWon;
-  let newIsGameOver = gameState.isGameOver;
+  let newIsGameOver: boolean = gameState.isGameOver;
 
   if (gameState.deck.length === 0 && gameState.slot.length === 0) {
     newIsGameWon = true;
