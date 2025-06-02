@@ -165,3 +165,15 @@ To prevent the ranking list from causing page-level scrollbars when it contains 
 - Added the following CSS rules to the `.ranking-list` selector in [`src/app/globals.css`](src/app/globals.css:116):
     - `max-height: calc(100vh - 250px);` (Limits height based on viewport, accounting for other UI elements)
     - `overflow-y: auto;` (Enables vertical scrollbar only when content exceeds max-height)
+---
+### Decision (Architecture)
+[2025-06-02 17:01:00] - Adopt Cloudflare Hyperdrive for Database Connectivity
+
+**Rationale:**
+Leveraging Hyperdrive simplifies database connection management from Cloudflare Pages Functions by providing pooled, persistent connections close to the compute environment. This avoids the overhead of establishing new connections per request, potentially improves performance, reduces load on the origin PostgreSQL database, and integrates seamlessly with the existing Cloudflare Pages deployment target. It replaces direct connections from API routes using the `pg` library's pool.
+
+**Implications/Details:**
+- Requires configuration in the Cloudflare Dashboard (connecting Hyperdrive to the origin PostgreSQL).
+- The `DATABASE_URL` environment variable in Cloudflare Pages settings must be updated to the Hyperdrive connection string.
+- API routes ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts:1), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts:1)) will use this new connection string via `process.env.DATABASE_URL`.
+- The `pg` library remains compatible, but the SSL configuration within the `pg.Pool` might need review/simplification as Hyperdrive manages the secure connection to the origin.

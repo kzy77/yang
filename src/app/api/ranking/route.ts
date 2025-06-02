@@ -30,7 +30,7 @@ const pool = new Pool({
   connectionString: connectionString,
   // Basic SSL handling for production environments (like Vercel Postgres, Neon, etc.)
   // Adjust based on your specific hosting provider's requirements.
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+
 });
 
 export async function GET() {
@@ -78,7 +78,7 @@ export async function GET() {
     console.error('Error fetching ranking:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     // Check for specific connection errors if needed
-    let status = 500;
+    const status = 500;
     let errorType = 'Failed to fetch ranking data.';
     if (errorMessage.includes('connect ECONNREFUSED') || errorMessage.includes('password authentication failed')) {
         errorType = 'Database connection error.';
@@ -99,6 +99,7 @@ export async function GET() {
   }
 }
 
-pool.on('error', (err: Error, client: PoolClient) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+pool.on('error', (err: Error, _client: PoolClient) => {
   console.error('Unexpected error on idle client', err);
 });

@@ -1,10 +1,10 @@
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false, // Changed from true
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false, // Changed from true
   },
   // serverExternalPackages: ['next'], //  Next.js 14.2.3 doesn't recognize this
 };

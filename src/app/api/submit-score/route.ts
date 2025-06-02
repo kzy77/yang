@@ -7,7 +7,7 @@ import { Pool, PoolClient } from 'pg';
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({
   connectionString: connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+
 });
 
 // Basic input validation (can be expanded)
@@ -85,6 +85,7 @@ export async function POST(request: Request) {
 }
 
 // Pool error handling (reuse from ranking route or centralize)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 pool.on('error', (err: Error, client: PoolClient) => {
   console.error('Unexpected error on idle client', err);
 });
