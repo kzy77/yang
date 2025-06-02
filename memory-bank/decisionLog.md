@@ -177,3 +177,16 @@ Leveraging Hyperdrive simplifies database connection management from Cloudflare 
 - The `DATABASE_URL` environment variable in Cloudflare Pages settings must be updated to the Hyperdrive connection string.
 - API routes ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts:1), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts:1)) will use this new connection string via `process.env.DATABASE_URL`.
 - The `pg` library remains compatible, but the SSL configuration within the `pg.Pool` might need review/simplification as Hyperdrive manages the secure connection to the origin.
+---
+### Decision (Architecture/Deployment)
+[2025-06-02 17:34:48] - Revert API Routes to Node.js Runtime due to Edge Compatibility Issues
+
+**Rationale:**
+Attempting to deploy API routes ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts:1), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts:1)) using Cloudflare Hyperdrive with `runtime = 'edge'` resulted in build failures. The root cause is the `pg` library and its dependencies relying on Node.js built-in modules (`fs`, `path`, `stream`, etc.) which are not available in the Vercel Edge Runtime environment used by Cloudflare Pages Functions when `runtime = 'edge'` is specified. To resolve this compatibility issue while minimizing code changes to the existing database logic, the decision is to explicitly set the runtime for these specific API routes back to `'nodejs'`.
+
+**Implications/Details:**
+- The following API routes must have `export const runtime = 'nodejs';` added or set:
+    - [`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts:1)
+    - [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts:1)
+- This means these routes will run as Node.js serverless functions on Cloudflare Pages, not Edge functions.
+- Cloudflare Hyperdrive integration (Decision [2025-06-02 17:01:00]) is effectively paused or needs re-evaluation for Node.js runtime, as its primary benefit is for Edge functions. Direct DB connection via `pg` pool in Node.js runtime remains the current working method.
