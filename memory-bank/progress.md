@@ -14,6 +14,7 @@ This file tracks the project's progress using a task list format.
 * [2025-06-02 23:38:00] - Completed Task: 将 API 路由 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)) 重构为 Edge Runtime 兼容，并使用 `@neondatabase/serverless`。
 ## Current Tasks
 
+* [2025-06-02 23:51:05] - Edge Runtime 重构 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)): 代码实现已完成，但本地测试 (`npm run dev`) 因本地 Edge Runtime 模拟环境限制（出站网络问题）导致的 `fetch failed` 错误而受阻。需要在已部署的环境中测试或解决本地模拟问题。
 *   
 
 ## Next Steps

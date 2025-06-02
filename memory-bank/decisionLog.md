@@ -193,6 +193,7 @@ Attempting to deploy API routes ([`src/app/api/ranking/route.ts`](src/app/api/ra
 ---
 **Timestamp:** 2025-06-02 23:38:00
 **Decision:** 将 API 路由 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)) 重构为 Edge Runtime 并使用 `@neondatabase/serverless`。
+*   **附注 (本地测试):** 尽管使用 `@neondatabase/serverless` 将代码重构为 Edge Runtime 已成功，但通过 `npm run dev` 进行本地测试时遇到了 `fetch failed` 错误。调试表明这是本地 Next.js Edge Runtime 模拟环境的限制，阻止了出站网络请求，并非重构代码本身的问题。功能应在已部署的环境中验证。
 **Rationale:** 基于用户明确请求以启用 Edge Runtime 功能，覆盖了先前因 `pg` 库不兼容而保留 Node.js runtime 的决策 ([`memory-bank/decisionLog.md:182`](memory-bank/decisionLog.md:182))。`@neondatabase/serverless` 是选定的 Edge 兼容数据库驱动。
 **Implementation Details:**
 *   在两个路由文件中将 `export const runtime = 'edge';` 添加或修改。

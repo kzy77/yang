@@ -16,6 +16,7 @@
 *   
 * [2025-06-02 17:43:48] - Fixed `@typescript-eslint/no-unused-vars` lint error in [`src/components/GameInterface.tsx`](src/components/GameInterface.tsx:46) by changing `catch (e)` to `catch {}` as the error object was intentionally unused.
 * [2025-06-02 20:22:00] - Fixed TypeScript type error (`Type 'true' is not assignable to type 'false'`) in [`src/game/logic.ts`](src/game/logic.ts:244) by explicitly typing `newIsGameOver` as `boolean` on [line 240](src/game/logic.ts:240) to prevent incorrect type narrowing.
+* [2025-06-02 23:50:44] - 在 Edge Runtime 重构后使用 `npm run dev` 进行本地测试时，API 路由 ([`src/app/api/ranking/route.ts`](src/app/api/ranking/route.ts), [`src/app/api/submit-score/route.ts`](src/app/api/submit-score/route.ts)) 遇到 `fetch failed` 运行时错误。调试确认这是由于本地 Next.js Edge Runtime 模拟环境限制了出站 `fetch` 请求，并非代码或数据库连接问题。建议用户检查本地网络/环境配置或在已部署的环境中测试。
 
 ## Open Questions/Issues
 

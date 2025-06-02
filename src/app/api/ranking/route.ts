@@ -32,6 +32,7 @@ export async function GET() {
 
     // Execute query using neon function directly as a tagged template
     // No parameters needed for this query
+
     console.log('Executing ranking query...');
     const resultRows = await neon(connectionString)`
       SELECT
