@@ -1,64 +1,53 @@
 export const runtime = 'edge';
 // src/app/api/ranking/route.ts
 import { NextResponse } from 'next/server';
-import { neon } from '@neondatabase/serverless'; // ONLY import neon
+// Removed: import { neon } from '@neondatabase/serverless';
+import { db, schema } from '../../../lib/drizzle'; // Import Drizzle db and schema
+import { asc, desc } from 'drizzle-orm'; // Import ordering functions
 
-interface GameResultRow {
-  username: string;
-  score: number;
-  completion_time_ms: number;
-}
+// Removed GameResultRow interface, Drizzle infers types
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  console.error("FATAL ERROR: DATABASE_URL environment variable is not set.");
-}
-
-// Removed query object definition
+// Removed connectionString logic and check
 
 export async function GET() {
   console.log('API route /api/ranking called');
 
-  if (!connectionString) {
-    return NextResponse.json(
-      { error: 'Database connection is not configured.', details: 'DATABASE_URL environment variable is missing.' },
-      { status: 500 }
-    );
-  }
+  // Removed connectionString check
 
   try {
-    console.log('Connecting to database via Neon serverless driver...');
+    console.log('Fetching ranking using Drizzle ORM...');
 
-    // Execute query using neon function directly as a tagged template
-    // No parameters needed for this query
+    // Replace neon tagged template with Drizzle select query
+    const resultRows = await db.select({
+        // Select specific columns, renaming completion_time_ms if needed by schema
+        id: schema.gameResults.id, // Include id if needed later, otherwise optional
+        username: schema.gameResults.username,
+        score: schema.gameResults.score,
+        completionTimeMs: schema.gameResults.completionTimeMs, // Use the name defined in schema.ts
+        createdAt: schema.gameResults.createdAt, // Include if needed
+      })
+      .from(schema.gameResults)
+      .orderBy(
+        desc(schema.gameResults.score), // Order by score descending
+        asc(schema.gameResults.completionTimeMs) // Then by time ascending
+      )
+      .limit(10); // Limit to top 10 results
 
-    console.log('Executing ranking query...');
-    const resultRows = await neon(connectionString)`
-      SELECT
-        username,
-        score,
-        completion_time_ms
-      FROM game_results
-      ORDER BY
-        score DESC,
-        completion_time_ms ASC
-      LIMIT 10;
-    ` as GameResultRow[]; // Assert the result type
+    console.log('Query successful via Drizzle, rows:', resultRows.length);
 
-    console.log('Query successful, rows:', resultRows.length);
-
-    const rankings = resultRows.map((row: GameResultRow, index: number) => ({
+    // Map results to the desired format (remains similar)
+    const rankings = resultRows.map((row, index) => ({
       rank: index + 1,
       username: row.username,
       score: row.score,
-      time: row.completion_time_ms,
+      time: row.completionTimeMs, // Use the selected column name
     }));
 
     return NextResponse.json(rankings);
 
   } catch (error) {
-    console.error('Error fetching ranking:', error);
+    console.error('Error fetching ranking via Drizzle:', error);
+    // Keep existing error handling structure
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     const status = 500;
     let errorType = 'Failed to fetch ranking data.';

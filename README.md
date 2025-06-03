@@ -59,3 +59,4 @@ To deploy via GitHub:
     -   **Node.js version**: Ensure it's compatible (e.g., Node.js 22.15.1 or later).
     -   **Compatibility Flags**: Enable `nodejs_compat` for both Production and Preview environments in **Settings > Compatibility Flags**.
 6.  Click "Save and Deploy".
+7.  **Configure Database Access (Hyperdrive):** For database connectivity using Neon and Drizzle, follow the instructions in [Configuring Cloudflare Hyperdrive for Neon](./docs/cloudflare-hyperdrive-neon.md) to set up the necessary Hyperdrive binding (`HYPERDRIVE`) in your Cloudflare Pages project settings.

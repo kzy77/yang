@@ -1,0 +1,628 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.snake_scores": {
+      "name": "snake_scores",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "player_name": {
+          "name": "player_name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.customer": {
+      "name": "customer",
+      "schema": "",
+      "columns": {
+        "c_custkey": {
+          "name": "c_custkey",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "c_name": {
+          "name": "c_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_address": {
+          "name": "c_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_nationkey": {
+          "name": "c_nationkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_phone": {
+          "name": "c_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_acctbal": {
+          "name": "c_acctbal",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_mktsegment": {
+          "name": "c_mktsegment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "c_comment": {
+          "name": "c_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.nation": {
+      "name": "nation",
+      "schema": "",
+      "columns": {
+        "n_nationkey": {
+          "name": "n_nationkey",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "n_name": {
+          "name": "n_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "n_regionkey": {
+          "name": "n_regionkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "n_comment": {
+          "name": "n_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.orders": {
+      "name": "orders",
+      "schema": "",
+      "columns": {
+        "o_orderkey": {
+          "name": "o_orderkey",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "o_custkey": {
+          "name": "o_custkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_orderstatus": {
+          "name": "o_orderstatus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_totalprice": {
+          "name": "o_totalprice",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_orderdate": {
+          "name": "o_orderdate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_orderpriority": {
+          "name": "o_orderpriority",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_clerk": {
+          "name": "o_clerk",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_shippriority": {
+          "name": "o_shippriority",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "o_comment": {
+          "name": "o_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.part": {
+      "name": "part",
+      "schema": "",
+      "columns": {
+        "p_partkey": {
+          "name": "p_partkey",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "p_name": {
+          "name": "p_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_mfgr": {
+          "name": "p_mfgr",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_brand": {
+          "name": "p_brand",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_type": {
+          "name": "p_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_size": {
+          "name": "p_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_container": {
+          "name": "p_container",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_retailprice": {
+          "name": "p_retailprice",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "p_comment": {
+          "name": "p_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.region": {
+      "name": "region",
+      "schema": "",
+      "columns": {
+        "r_regionkey": {
+          "name": "r_regionkey",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "r_name": {
+          "name": "r_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "r_comment": {
+          "name": "r_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.supplier": {
+      "name": "supplier",
+      "schema": "",
+      "columns": {
+        "s_suppkey": {
+          "name": "s_suppkey",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "s_name": {
+          "name": "s_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "s_address": {
+          "name": "s_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "s_nationkey": {
+          "name": "s_nationkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "s_phone": {
+          "name": "s_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "s_acctbal": {
+          "name": "s_acctbal",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "s_comment": {
+          "name": "s_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.game_results": {
+      "name": "game_results",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completion_time_ms": {
+          "name": "completion_time_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.partsupp": {
+      "name": "partsupp",
+      "schema": "",
+      "columns": {
+        "ps_partkey": {
+          "name": "ps_partkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ps_suppkey": {
+          "name": "ps_suppkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ps_availqty": {
+          "name": "ps_availqty",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ps_supplycost": {
+          "name": "ps_supplycost",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ps_comment": {
+          "name": "ps_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "partsupp_pkey": {
+          "name": "partsupp_pkey",
+          "columns": [
+            "ps_partkey",
+            "ps_suppkey"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.lineitem": {
+      "name": "lineitem",
+      "schema": "",
+      "columns": {
+        "l_orderkey": {
+          "name": "l_orderkey",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_partkey": {
+          "name": "l_partkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_suppkey": {
+          "name": "l_suppkey",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_linenumber": {
+          "name": "l_linenumber",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_quantity": {
+          "name": "l_quantity",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_extendedprice": {
+          "name": "l_extendedprice",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_discount": {
+          "name": "l_discount",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_tax": {
+          "name": "l_tax",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_returnflag": {
+          "name": "l_returnflag",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_linestatus": {
+          "name": "l_linestatus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_shipdate": {
+          "name": "l_shipdate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_commitdate": {
+          "name": "l_commitdate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_receiptdate": {
+          "name": "l_receiptdate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_shipinstruct": {
+          "name": "l_shipinstruct",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_shipmode": {
+          "name": "l_shipmode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "l_comment": {
+          "name": "l_comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "lineitem_cluster_index_0": {
+          "name": "lineitem_cluster_index_0",
+          "columns": [
+            {
+              "expression": "l_shipdate",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int8_ops",
+              "isExpression": false
+            },
+            {
+              "expression": "l_orderkey",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "int8_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "lineitem_pkey": {
+          "name": "lineitem_pkey",
+          "columns": [
+            "l_orderkey",
+            "l_linenumber"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.tabledefs": {
+      "name": "tabledefs",
+      "values": [
+        "PKEY_INTERNAL",
+        "PKEY_EXTERNAL",
+        "FKEYS_INTERNAL",
+        "FKEYS_EXTERNAL",
+        "COMMENTS",
+        "FKEYS_NONE",
+        "INCLUDE_TRIGGERS",
+        "NO_TRIGGERS"
+      ],
+      "schema": "public"
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {}
+  }
+}
