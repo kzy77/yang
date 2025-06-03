@@ -26,16 +26,16 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font stack */
   background-color: var(--background-light);
   /* min-height: 100vh; */
-  height: 100vh;
+  /* height: 100vh; Removed, height is now controlled by flex parent */
   overflow-y: auto;
   box-sizing: border-box;
   color: var(--text-color-dark);
 }
 
 .game-title {
-  font-size: 2.0em; /* Reduced font size */
+  font-size: 1.5em; /* Further reduced font size */
   color: var(--secondary-color);
-  margin-bottom: 5px; /* Reduced bottom margin */
+  margin-bottom: 2px; /* Further reduced bottom margin */
   font-weight: 400;
 }
 
@@ -220,7 +220,7 @@ position: relative; /* Ensure stacking context for z-index and absolute children
   }
 
   .game-title {
-    font-size: 2em;
+    font-size: 1.4em; /* Further reduced for medium screens */
   }
 
   .score-display {
@@ -280,7 +280,7 @@ position: relative; /* Ensure stacking context for z-index and absolute children
   }
 
   .game-title {
-    font-size: 1.8em;
+    font-size: 1.3em; /* Further reduced for small screens */
   }
 
   .score-display {

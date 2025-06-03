@@ -7,6 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f4f4f4; /* A light background for the whole page */
+  height: 100vh; /* Ensure body takes full viewport height */
+  overflow: hidden; /* Prevent body from scrolling */
 }
 
 code {
@@ -76,13 +78,14 @@ code {
   display: flex;
   flex-direction: row; /* Default: side-by-side */
   justify-content: center; /* Center items horizontally */
-  align-items: flex-start; /* Align items to the top */
+  align-items: stretch; /* Stretch items vertically */
   gap: 20px; /* Space between game area and ranking */
   padding: 10px 10px; /* Reduced top/bottom padding */
   width: 100%;
   max-width: 1200px; /* Optional: max width for the whole layout */
   margin: 0 auto; /* Center the layout container */
   box-sizing: border-box;
+  height: 100%; /* Make container fill body height */
 }
 
 /* Adjust game container if needed within the flex layout */
@@ -100,6 +103,8 @@ code {
   background-color: var(--background-medium, #e9ecef); /* Use existing variable or fallback */
   border-radius: var(--border-radius-md, 8px);
   box-shadow: 0 2px 8px var(--shadow-color, rgba(0, 0, 0, 0.15));
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack children vertically */
   height: fit-content; /* Adjust height based on content */
 }
 
@@ -116,6 +121,8 @@ code {
 .ranking-list {
   list-style: none;
   padding: 0;
+  flex-grow: 1; /* Allow list to fill remaining space */
+  overflow-y: auto; /* Enable internal scrolling */
   margin: 0;
 max-height: calc(100vh - 250px); /* Limit height and enable scrolling */
   overflow-y: auto; /* Show scrollbar only when needed */
