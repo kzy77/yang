@@ -2,9 +2,11 @@
 
 本文档将指导您如何在 Cloudflare Pages 项目中设置和配置 Hyperdrive，以优化与 Neon PostgreSQL 数据库的连接。
 
+## 前提条件
+
 ## 步骤
 
-### 1. 创建 Hyperdrive 实例
+### 1. 创建 Hyperdrive 实例 (通过 Cloudflare Dashboard)
 
 首先，您需要在 Cloudflare Dashboard 中创建一个 Hyperdrive 实例来管理数据库连接。
 
@@ -15,8 +17,19 @@
     *   **Binding name:** 建议使用 `HYPERDRIVE`。这个名称将作为环境变量在您的 Pages Functions 中使用，与代码（例如 [`src/lib/drizzle.ts`](src/lib/drizzle.ts:0) 中的 `process.env.HYPERDRIVE`）保持一致非常重要。
     *   **Database type:** 选择 **PostgreSQL**。
     *   **Connection string:** 粘贴您的 Neon 数据库 **pooled** 连接字符串。这通常以 `postgresql://...` 开头。
-        *   **重要提示:** 请务必使用 Neon 提供的 **pooled** 连接字符串，而不是 direct connection string，以充分利用 Hyperdrive 的连接池优势。
+        *   **极其重要:** 请**务必**使用 Neon 提供的 **pooled** 连接字符串，而不是 direct connection string。Hyperdrive 的主要优势在于连接池管理，使用 direct string 会绕过这一核心功能。
 5.  点击 **Save** 保存绑定。
+
+### 可选：使用 Wrangler CLI 创建 Hyperdrive 实例
+
+除了通过 Dashboard UI，您也可以使用 Cloudflare 的命令行工具 Wrangler 来创建 Hyperdrive 配置。
+
+1.  确保您已安装最新版本的 Wrangler (`npm install -g wrangler` 或 `npx wrangler@latest ...`)。
+2.  运行以下命令，替换 `<NAME>` 为您想要的绑定名称（例如 `HYPERDRIVE`），并将 `postgresql://...` 替换为您的 Neon **pooled** 连接字符串：
+    ```bash
+    npx wrangler hyperdrive create <NAME> --connection-string="postgresql://user:password@host/dbname?sslmode=require"
+    ```
+    *   同样，请确保使用 **pooled** 连接字符串。
 
 ### 2. 将 Hyperdrive 绑定到 Pages 项目
 
@@ -27,7 +40,7 @@
 3.  向下滚动到 **Hyperdrive bindings** 部分，然后点击 **Add binding**。
 4.  配置绑定：
     *   **Variable name:** 输入 `HYPERDRIVE`。此名称 **必须** 与您在代码中访问环境变量时使用的名称完全匹配（例如，[`src/lib/drizzle.ts`](src/lib/drizzle.ts:0) 中的 `process.env.HYPERDRIVE`）。
-    *   **Hyperdrive instance:** 从下拉列表中选择您在步骤 1 中创建的 Hyperdrive 实例。
+    *   **Hyperdrive instance:** 从下拉列表中选择您在步骤 1 或使用 CLI 创建的 Hyperdrive 实例。
 5.  点击 **Save** 保存绑定。
 
 ### 3. (可选但推荐) 设置 `DATABASE_URL` 作为备用
@@ -37,7 +50,7 @@
 1.  在 Pages 项目的 **Settings** > **Environment variables** 中，点击 **Add variable**（确保选择 **Production** 环境，或根据需要选择其他环境）。
 2.  配置环境变量：
     *   **Variable name:** `DATABASE_URL`
-    *   **Value:** 粘贴您的 Neon 数据库连接字符串（与您在 Hyperdrive 配置中使用的相同）。
+    *   **Value:** 粘贴您的 Neon 数据库 **pooled** 连接字符串（与您在 Hyperdrive 配置中使用的相同）。
 3.  点击 **Save**。
 
 您的应用程序代码（如 [`src/lib/drizzle.ts`](src/lib/drizzle.ts:0)）可以实现逻辑，优先尝试使用 `process.env.HYPERDRIVE`，如果失败或未定义，则回退到使用 `process.env.DATABASE_URL`。
