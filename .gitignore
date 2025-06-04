@@ -44,4 +44,5 @@ next-env.d.ts
 # Cloudflare Pages / next-on-pages
 .vercel
 .wrangler
+wrangler.toml
 
