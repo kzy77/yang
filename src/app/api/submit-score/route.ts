@@ -1,8 +1,8 @@
 export const runtime = 'edge'; // Keep edge runtime
 // src/app/api/submit-score/route.ts
 import { NextResponse } from 'next/server';
-// Removed: import { neon } from '@neondatabase/serverless';
-import { db, schema } from '../../../lib/drizzle'; // Import Drizzle db and schema
+// Import the factory function and schema
+import { createDbClient, schema } from '../../../lib/drizzle';
 
 // Basic input validation interface (remains the same)
 interface SubmitScorePayload {
@@ -11,14 +11,14 @@ interface SubmitScorePayload {
   time?: number; // Expecting time in milliseconds from frontend
 }
 
-// Removed connectionString logic, handled in drizzle.ts
-
 export async function POST(request: Request) {
   console.log('API route /api/submit-score called');
 
-  // Removed connectionString check, db initialization handles this
-
   try {
+    // Create the db client instance inside the handler
+    // Similar to the ranking route, this relies on env vars being available
+    const db = createDbClient();
+
     const payload: SubmitScorePayload = await request.json();
     const { username, score, time } = payload;
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     console.log('Submitting score using Drizzle ORM...');
     console.log(`Executing insert with params: ${trimmedUsername}, ${score}, ${time}`);
 
-    // Replace neon tagged template with Drizzle insert
+    // Use Drizzle insert
     const result = await db.insert(schema.gameResults).values({
       username: trimmedUsername,
       score: score,
@@ -59,12 +59,14 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Error submitting score via Drizzle:', error);
-    // Keep existing error handling, Drizzle errors often wrap driver errors
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
      let status = 500;
      let errorType = 'Failed to submit score.';
-     // These checks might still be relevant depending on the underlying driver error
-     if (errorMessage.includes('connect') || errorMessage.includes('authentication failed') || errorMessage.includes('failed to connect')) {
+     // Add check for the configuration error from createDbClient
+     if (errorMessage.includes('Required database configuration')) {
+         errorType = 'Database configuration error.';
+         console.error("Database configuration missing (HYPERDRIVE or DATABASE_URL)");
+     } else if (errorMessage.includes('connect') || errorMessage.includes('authentication failed') || errorMessage.includes('failed to connect')) {
          errorType = 'Database connection error.';
      } else if (errorMessage.includes('violates not-null constraint')) {
          errorType = 'Missing required data field.';
@@ -81,7 +83,4 @@ export async function POST(request: Request) {
       { status: status }
     );
   }
-  // No finally block needed as Drizzle manages connections implicitly
 }
-
-// Removed pool.on('error') handler

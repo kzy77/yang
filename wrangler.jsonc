@@ -1,0 +1,20 @@
+{
+  "name": "yang", // 从 wrangler.toml 继承
+  // 注意: "main" 入口点可能需要根据 Next.js on Pages 的实际构建输出进行调整。
+  // 之前的 wrangler.toml 使用了 "src/index.ts"，请确认这是否正确，
+  // 或者是否应为类似 ".vercel/output/static/_worker.js" 的路径。暂时保留 "src/index.ts"。
+  "main": "src/index.ts",
+  "compatibility_date": "2024-05-01", // 从 wrangler.toml 继承
+  "compatibility_flags": [
+    "nodejs_compat" // 从 wrangler.toml 继承
+  ],
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE", // 与 src/lib/drizzle.ts 匹配
+      // 重要提示给用户:
+      // 在部署前，请务必运行 'npx wrangler hyperdrive create ...' 命令，
+      // 并将下面 "<YOUR_HYPERDRIVE_ID>" 替换为获取到的实际 ID。
+      "id": "<YOUR_HYPERDRIVE_ID>" // 占位符 ID
+    }
+  ]
+}
